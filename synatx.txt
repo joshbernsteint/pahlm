@@ -1,0 +1,13 @@
+**Test** -> Bold
+*Test* -> Italic
+![var] -> Invoke macro
+(#*n) -> Heading h(n)
+*[x] -> Unorderd list
+&[x] -> Ordered list
+$Test$ -> Inline math
+`Test` -> Inline code
+```
+Test    -> Code block
+```
+
+\define{var} {value} -> Define macro
