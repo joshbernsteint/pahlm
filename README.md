@@ -1,2 +1,6 @@
-# joshdown
-IN PROGRESS!!! Markdown with an extended syntax to support LaTeX-like operations. 
+# pahlm
+Programming
+Arrangement for
+HTML to look like
+LaTeX and
+Markdown
