@@ -101,14 +101,14 @@ const listRegexes = {
     ol: {
         pattern: /^(\s)*&(\s+).+/g,
         sliceLength: 2,
-        start: "<ul>",
-        end: "</ul>",
+        start: "<ol>",
+        end: "</ol>",
     },
     olc: {
         pattern: /^(\s)*(&\[.+\])(\s+).+/g,
         sliceLength: 1,
-        start: "<ul>",
-        end: "</ul>",
+        start: "<ol>",
+        end: "</ol>",
         getInput: true,
     },
 };
