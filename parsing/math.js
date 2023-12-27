@@ -1,0 +1,3 @@
+function mathParser(string){
+    
+}

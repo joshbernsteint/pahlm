@@ -7,12 +7,13 @@ class ChangeQueue{
 
 
     IsRangeAccessible(startIndex, endIndex, type){
+
         let validRange = true;
         this.inaccessibleRanges.every(range => {
-            if((type !== range[2] || range[2] === "none") && ((range[0] <= startIndex && endIndex <= range[1]) || 
-            (startIndex <= range[0] && range[1] <= endIndex) || 
-            (range[0] <= startIndex && endIndex >= range[1]) || 
-            (range[0] >= startIndex && endIndex <= range[1])) 
+            if((type !== range[2] || range[2] === "none") && (
+                (range[0] <= startIndex && startIndex <= range[1]) ||
+                (range[0] <= endIndex && endIndex <= range[1])
+            ) 
             ){
                 validRange = false;
                 return false;
@@ -23,7 +24,9 @@ class ChangeQueue{
     }
 
     addToQueue(regex, startIndex, endIndex, type){
-        if(this.IsRangeAccessible(startIndex, endIndex)){
+
+        if(regex.substring.substring(regex.sliceLength,regex.substring.length - regex.sliceLength).length === 0) return -1;
+        else if(this.IsRangeAccessible(startIndex, endIndex)){
             const newRange = [startIndex, endIndex, type];
             this.currentQueue.push({
                 ...regex,
@@ -32,7 +35,7 @@ class ChangeQueue{
             });
 
             //If this regex prevents recursion inside of it
-            if(regex.preventRecursion){
+            if(regex.preventRecursive){
                 this.inaccessibleRanges.push(newRange);
             }
         }
