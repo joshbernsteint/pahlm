@@ -1,9 +1,8 @@
-import { basicRegexes, listRegexes } from "./regexes.js";
+import { basicRegexes, customCharactersAndMacrosRegexes, listRegexes } from "./regexes.js";
 import ChangeQueue from "./ChangeQueue.js";
 import Stack from "../utils/Stack.js";
 
-const basicKeys = Object.keys(basicRegexes);
-const listKeys = Object.keys(listRegexes);
+
 
 
 
@@ -16,6 +15,10 @@ function parseFile(fileData){
     };
 
     function parseString(str){
+
+        const basicKeys = Object.keys(basicRegexes);
+        const listKeys = Object.keys(listRegexes);
+        const customKeys = Object.keys(customCharactersAndMacrosRegexes);
         // if(obj.isGroup){
         //     for (let i = 0; i < obj.keys.length; i++) {
         //         const key = obj.keys[i];
@@ -31,9 +34,18 @@ function parseFile(fileData){
         // }
         // const text = res[0].substring(res[2].length+1);
         // const newLi = res[2].substring(2,res[2].length-1);
+
+
+        //Replace all escape characters
+        for (let i = 0; i < customKeys.length; i++) {
+            const body = customCharactersAndMacrosRegexes[customKeys[i]];
+            str = str.replaceAll(body.pattern, body.replace + " ");
+        }
+
     
         const blankDepth = str.search(/\S|$/);
         const queue = new ChangeQueue(str.trim());
+
         //Check for lists, max one per line, just a straight replace. No queue yet.
         for (let i = 0; i < listKeys.length; i++) {
             const body = listRegexes[listKeys[i]];
@@ -65,6 +77,7 @@ function parseFile(fileData){
         };
 
 
+        //Basic changes
         for (let i = 0; i < basicKeys.length; i++) {
             const body = basicRegexes[basicKeys[i]];
             if(!body.isGroup){
@@ -77,7 +90,7 @@ function parseFile(fileData){
                         ...body,
                         substring: match[0],
                     },lower,upper,basicKeys[i]);
-                    console.log('queued', lower, upper);
+                    // console.log('queued', lower, upper);
                 }
             }
             else{
@@ -86,7 +99,12 @@ function parseFile(fileData){
             
             
         }
-        console.log(queue.currentQueue);
+
+        //Apply the queue
+        queue.applyQueue();
+        return queue.string;
+
+
     };
 
 

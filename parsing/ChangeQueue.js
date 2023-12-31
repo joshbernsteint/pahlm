@@ -1,3 +1,5 @@
+import mathParser from "./math.js";
+
 class ChangeQueue{
     constructor(string){
         this.string = string;
@@ -46,6 +48,25 @@ class ChangeQueue{
 
     setString(str){
         this.string = str;
+    }
+
+    applyQueue(){
+        for (let i = 0; i < this.currentQueue.length; i++) {
+            const el = this.currentQueue[i];
+            this.string = this.string.replace(el.pattern,(s,m1, offset) => {
+                if(offset >= el.range[0]){
+                    if(el.type === "inlineMath" || el.type === "lineMath")
+                        return el.start + mathParser(m1) + el.end;
+                    else
+                        return el.start + m1 + el.end;
+                }
+                else{
+                    return s;
+                }
+            });
+
+
+        }
     }
 };
 
