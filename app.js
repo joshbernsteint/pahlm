@@ -4,9 +4,9 @@ import parseFile from './parsing/parser.js';
 
 
 
-const fileData = fs.readFileSync('input.plm').toString().split("\n");
+const fileData = fs.readFileSync('input.plm').toString().replaceAll("\r","");
 const resLines = parseFile(fileData);
 
-fs.writeFileSync("out.html",resLines.join('\n'));
+fs.writeFileSync("out.html",resLines);
 
 // console.log(encode('* % \\ [ ] ( )', {mode: 'extensive'}));

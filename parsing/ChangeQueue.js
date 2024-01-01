@@ -50,6 +50,11 @@ class ChangeQueue{
         this.string = str;
     }
 
+    clear(){
+        this.currentQueue = [];
+        this.string = "";
+    }
+
     applyQueue(){
         for (let i = 0; i < this.currentQueue.length; i++) {
             const el = this.currentQueue[i];
@@ -58,15 +63,14 @@ class ChangeQueue{
                     if(el.type === "inlineMath" || el.type === "lineMath")
                         return el.start + mathParser(m1) + el.end;
                     else
-                        return el.start + m1 + el.end;
+                        return el.start + (m1 ? m1 : "") + el.end;
                 }
                 else{
                     return s;
                 }
             });
-
-
         }
+        this.currentQueue = [];
     }
 };
 

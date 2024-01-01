@@ -2,7 +2,7 @@
 
 const basicRegexes = {
     comment: {
-        pattern: /(<!--).+(-->)/g,
+        pattern: /(<!--).+(-->)/gm,
         sliceLength: 0,
         start: "",
         end: "",
@@ -18,13 +18,13 @@ const basicRegexes = {
         enterMathMode: true,
     },
     bold: {
-        pattern: /\*\*([^(\*)]*)\*\*/g,
+        pattern: /\*\*([^(\*)]*)\*\*/gm,
         start: "<b>",
         end: "</b>",
         sliceLength: 2,
     },
     italic:{
-        pattern: /\*([^(\*)]*)\*/g,
+        pattern: /\*([^(\*)]*)\*/gm,
         sliceLength: 1,
         start: "<i>",
         end: "</i>",
@@ -76,14 +76,14 @@ const basicRegexes = {
         },
     },
     br: {
-        pattern: /(\s\s\s+)$/g,
+        pattern: /(\s\s\s+)$|^$/gm,
         sliceLength: 0,
         start: "<br>",
         end: "",
         fullReplace: true,
     },
     dash: {
-        pattern: /---/g,
+        pattern: /---/gm,
         sliceLength: 0,
         start: "&#8212;",
         end: "",
@@ -133,13 +133,13 @@ const listRegexes = {
  */
 const mathRegexes = {
     sup: {
-        pattern: /([^\s]+|(\{.+\}))\^((\{.+\})|.+?)/g,
+        pattern: /([^\s]+|(\{.+\}))\^((\{.+\})|.+?)/gm,
         operator: "^",
         start: "<msup>",
         end: "</msup>",
     },
     sub: {
-        pattern: /([^\s]+|(\{.+\}))\_((\{.+\})|.+?)/g,
+        pattern: /([^\s]+|(\{.+\}))\_((\{.+\})|.+?)/gm,
         operator: "_",
         start: "<msub>",
         end: "</msub>",
