@@ -9,4 +9,4 @@ const resLines = parseFile(fileData);
 
 fs.writeFileSync("out.html",resLines);
 
-// console.log(encode('* % \\ [ ] ( )', {mode: 'extensive'}));
+// console.log(encode('=', {mode: 'extensive'}));

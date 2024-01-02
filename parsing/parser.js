@@ -1,4 +1,4 @@
-import { basicRegexes, customCharactersAndMacrosRegexes, listRegexes } from "./regexes.js";
+import { basicRegexes, customCharactersAndMacrosRegexes, headingsRegexes, listRegexes } from "./regexes.js";
 import ChangeQueue from "./ChangeQueue.js";
 import Stack from "../utils/Stack.js";
 
@@ -6,7 +6,7 @@ import Stack from "../utils/Stack.js";
 
 
 
-function parseFile(fileData){
+function parseFile(str, trimInput=true){
 
     const listDepth = new Stack();
     const flags = {
@@ -38,9 +38,17 @@ function parseFile(fileData){
         str = str.replaceAll(body.pattern, body.replace + " ");
     }
 
+    //Headings
+    for (let i = 0; i < headingsRegexes.keys.length; i++) {
+        const body = headingsRegexes[headingsRegexes.keys[i]];
+        str = str.replaceAll(body.pattern,(s,g1) => {
+            return body.start + g1 + body.end;
+        });
+    }
+
 
     const blankDepth = str.search(/\S|$/);
-    const queue = new ChangeQueue(str.trim());
+    const queue = new ChangeQueue(trimInput ? str.trim() : str);
 
     //Check for lists, max one per line, just a straight replace. No queue yet.
     for (let i = 0; i < listKeys.length; i++) {
@@ -76,32 +84,25 @@ function parseFile(fileData){
     //Basic changes
     for (let i = 0; i < basicKeys.length; i++) {
         const body = basicRegexes[basicKeys[i]];
-        if(!body.isGroup){
-            const regex = new RegExp(body.pattern);
-            let match;
-            while ((match = regex.exec(queue.string)) !== null) {
-                if(match[0].length === 0){
-                    queue.addToQueue({
-                        ...body,
-                        substring: match[0]
-                    },match.index, match.index, basicKeys[i]);
-                    regex.lastIndex++;
-                }
-                else{
-                    const lower = match.index;
-                    const upper = (match[0].length - 1) + match.index;
-                    queue.addToQueue({
-                        ...body,
-                        substring: match[0],
-                    },lower,upper,basicKeys[i]);
-                }
+        const regex = new RegExp(body.pattern);
+        let match;
+        while ((match = regex.exec(queue.string)) !== null) {
+            if(match[0].length === 0){
+                queue.addToQueue({
+                    ...body,
+                    substring: match[0]
+                },match.index, match.index, basicKeys[i]);
+                regex.lastIndex++;
+            }
+            else{
+                const lower = match.index;
+                const upper = (match[0].length - 1) + match.index;
+                queue.addToQueue({
+                    ...body,
+                    substring: match[0],
+                },lower,upper,basicKeys[i]);
             }
         }
-        else{
-
-        }
-        
-        
     }
 
     //Apply the queue

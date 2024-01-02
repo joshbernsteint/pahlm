@@ -1,4 +1,4 @@
-import mathParser from "./math.js";
+import mathParser from "./math/math.js";
 
 class ChangeQueue{
     constructor(string){
@@ -12,10 +12,9 @@ class ChangeQueue{
 
         let validRange = true;
         this.inaccessibleRanges.every(range => {
-            if((type !== range[2] || range[2] === "none") && (
+            if(
                 (range[0] <= startIndex && startIndex <= range[1]) ||
                 (range[0] <= endIndex && endIndex <= range[1])
-            ) 
             ){
                 validRange = false;
                 return false;
@@ -29,7 +28,7 @@ class ChangeQueue{
 
         if(regex.substring.substring(regex.sliceLength,regex.substring.length - regex.sliceLength).length === 0) return -1;
         else if(this.IsRangeAccessible(startIndex, endIndex)){
-            const newRange = [startIndex, endIndex, type];
+            const newRange = [startIndex, endIndex];
             this.currentQueue.push({
                 ...regex,
                 range: newRange,
@@ -60,7 +59,7 @@ class ChangeQueue{
             const el = this.currentQueue[i];
             this.string = this.string.replace(el.pattern,(s,m1, offset) => {
                 if(offset >= el.range[0]){
-                    if(el.type === "inlineMath" || el.type === "lineMath")
+                    if(el.type === "inlineMath" || el.type === "blockLineMath")
                         return el.start + mathParser(m1) + el.end;
                     else
                         return el.start + (m1 ? m1 : "") + el.end;
@@ -71,7 +70,9 @@ class ChangeQueue{
             });
         }
         this.currentQueue = [];
+        return this.string;
     }
 };
 
 export default ChangeQueue;
+
