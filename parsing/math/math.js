@@ -1,3 +1,4 @@
+import { Queue } from "../../utils/index.js";
 import { mathMacros, mathOperators,mathIdentifiers, mathCommands } from "./math_regexes.js";
 
 function mathParser(string){
@@ -5,14 +6,36 @@ function mathParser(string){
 
     function helper(str){
         // console.log(str);
-        if(!isNaN(Number(str))){
+        if(!isNaN(Number(str)))
             return `<mn>${str}</mn>`;
-        }
+        
+        const mathQueue = new Queue(str);
+
     
     
-        // mathCommands.forEach(command => {
-        //     str = str.replaceAll(command.pattern, command.run);
-        // });
+        mathCommands.forEach(command => {
+            str = str.replaceAll(command.pattern, (...args) => {
+                let startIndex = -1;
+                //Find the start index
+                args.every(el => {
+                    if(Number.isInteger(el)){
+                        startIndex = el;
+                        return false;
+                    }
+                    return true;
+                })
+                const upperIndex = startIndex + args[0].length - 1;
+                const res = mathQueue.addToQueue({
+                    ...command,
+                    substring: args[0],
+                    sliceLength: 0,
+                    preventRecursive: true,
+                },startIndex, upperIndex, 'mathCommand');
+                return command.run(...args);
+            });
+        });
+
+        // console.log(mathQueue);
 
 
         
@@ -51,10 +74,10 @@ function mathParser(string){
     }
 
     // Replacing unbound indentifiers
-    string = string.replaceAll(/(?<!\\)\b[a-zA-Z0-9]+/gm,(s) => {
-        const splitted = s.split('').map(el => `<mi>${el}<mi>`);
-        return splitted.join('');
-    });
+    // string = string.replaceAll(/(?<!\\)\b[a-zA-Z0-9]+/gm,(s) => {
+    //     const splitted = s.split('').map(el => `<mi>${el}<mi>`);
+    //     return splitted.join('');
+    // });
 
     string = helper(string);
     return string;

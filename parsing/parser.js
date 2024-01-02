@@ -1,6 +1,6 @@
 import { basicRegexes, customCharactersAndMacrosRegexes, headingsRegexes, listRegexes } from "./regexes.js";
-import ChangeQueue from "./ChangeQueue.js";
-import Stack from "../utils/Stack.js";
+import {Stack, Queue} from "../utils/index.js";
+import mathParser from "./math/math.js";
 
 
 
@@ -15,21 +15,6 @@ function parseFile(str, trimInput=true){
     const basicKeys = Object.keys(basicRegexes);
     const listKeys = Object.keys(listRegexes);
     const customKeys = Object.keys(customCharactersAndMacrosRegexes);
-    // if(obj.isGroup){
-    //     for (let i = 0; i < obj.keys.length; i++) {
-    //         const key = obj.keys[i];
-    //         if(obj[key].pattern.test(str))
-    //             return obj[key].start + str.slice(obj[key].sliceLength) + obj[key].end;
-    //     }
-    //     return str;
-    // }
-    // else{
-    //     return str.replaceAll(obj.pattern,(s) => {
-    //         return obj.start + s.slice(0,s.length-obj.sliceLength).slice(obj.sliceLength) + obj.end;
-    //     });
-    // }
-    // const text = res[0].substring(res[2].length+1);
-    // const newLi = res[2].substring(2,res[2].length-1);
 
 
     //Replace all escape characters
@@ -48,7 +33,7 @@ function parseFile(str, trimInput=true){
 
 
     const blankDepth = str.search(/\S|$/);
-    const queue = new ChangeQueue(trimInput ? str.trim() : str);
+    const queue = new Queue(trimInput ? str.trim() : str);
 
     //Check for lists, max one per line, just a straight replace. No queue yet.
     for (let i = 0; i < listKeys.length; i++) {
@@ -105,9 +90,24 @@ function parseFile(str, trimInput=true){
         }
     }
 
-    //Apply the queue
-    queue.applyQueue();
-    return queue.string;
+    //Apply the queue and return
+    return queue.applyQueue((x, list) => {
+        for (let i = 0; i < list.length; i++) {
+            const el = list[i];
+            x = x.replace(el.pattern,(s,m1, offset) => {
+                if(offset >= el.range[0]){
+                    if(el.type === "inlineMath" || el.type === "blockLineMath")
+                        return el.start + mathParser(m1) + el.end;
+                    else
+                        return el.start + (m1 ? m1 : "") + el.end;
+                }
+                else{
+                    return s;
+                }
+            });
+        }
+        return x;
+    });
 }
 
 export default parseFile;

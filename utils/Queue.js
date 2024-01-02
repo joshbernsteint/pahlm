@@ -1,6 +1,5 @@
-import mathParser from "./math/math.js";
 
-class ChangeQueue{
+class Queue{
     constructor(string){
         this.string = string;
         this.currentQueue = [];
@@ -39,6 +38,7 @@ class ChangeQueue{
             if(regex.preventRecursive){
                 this.inaccessibleRanges.push(newRange);
             }
+            return 0;
         }
         else{
             return -1;
@@ -54,25 +54,13 @@ class ChangeQueue{
         this.string = "";
     }
 
-    applyQueue(){
-        for (let i = 0; i < this.currentQueue.length; i++) {
-            const el = this.currentQueue[i];
-            this.string = this.string.replace(el.pattern,(s,m1, offset) => {
-                if(offset >= el.range[0]){
-                    if(el.type === "inlineMath" || el.type === "blockLineMath")
-                        return el.start + mathParser(m1) + el.end;
-                    else
-                        return el.start + (m1 ? m1 : "") + el.end;
-                }
-                else{
-                    return s;
-                }
-            });
-        }
+    applyQueue(fun){
+        const result = fun(this.string, this.currentQueue);
+        this.string = result;
         this.currentQueue = [];
-        return this.string;
+        return result;
     }
 };
 
-export default ChangeQueue;
+export default Queue;
 

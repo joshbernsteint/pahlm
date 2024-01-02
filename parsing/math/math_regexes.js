@@ -85,10 +85,7 @@ const mathMacros = [
 ];
 
 const mathCommands = [
-    {
-        pattern: /\\text\{(.*)\}/gm,
-        run: defaultCommands.text,
-    }
+    { pattern: /\\text\{(.*?)\}/gm, run: defaultCommands.text },
 ]
 
 
