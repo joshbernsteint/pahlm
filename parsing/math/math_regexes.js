@@ -71,13 +71,13 @@ const mathIdentifiers = [
  */
 const mathMacros = [
     {
-        pattern: /([^\s]+|(\{.+\}))\^((\{.+\})|.+?)/gm,
+        pattern: /([^\s]+|(\{.+?\}))\^((\{.+?\})|.+?)/gm,
         operator: "^",
         start: "<msup>",
         end: "</msup>",
     },
     {
-        pattern: /([^\s]+|(\{.+\}))\_((\{.+\})|.+?)/gm,
+        pattern: /([^\s]+|(\{.+?\}))\_((\{.+?\})|.+?)/gm,
         operator: "_",
         start: "<msub>",
         end: "</msub>",
@@ -85,14 +85,13 @@ const mathMacros = [
 ];
 
 const mathCommands = [
-    { pattern: /\\text\{(.*?)\}/gm, run: defaultCommands.text },
+    { pattern: '\\\\text', arguments: 1, offsetIndex: 2, run: defaultCommands.text },
 ]
-
 
 
 export{
     mathOperators,
     mathMacros,
     mathIdentifiers,
-    mathCommands
+    mathCommands,
 };

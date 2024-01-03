@@ -31,7 +31,14 @@ function toLetters(num){
     return String.fromCharCode(97 + (num % 26)).repeat(iter);
 }
 
+//Taken from StackOverflow and modified
+function matchCurlyBraces(depth=3){
+  const basePatterns = ['\\{([^}{]*(?:','[^}{]*)*)\\}'];
+  return basePatterns[0].repeat(depth) + '\\{[^}{]*\\}' + basePatterns[1].repeat(depth);
+}
+
 export{
     toRomanNumeral,
     toLetters,
+    matchCurlyBraces,
 }

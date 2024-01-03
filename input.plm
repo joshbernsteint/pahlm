@@ -1,1 +1,8 @@
-$5 = 12 \text{Hello there \excommand{}} \text{Why would anyone do this??}$
+# Joshua Bernstein's *Pahlm*
+## Math capabilities
+$5^x + 2x^{\alpha + 4} \text{Hello there}$ $\Sigma^* \beta_1$
+`int x = 14;`
+```{js}
+    int y = 23;
+    x + y = modFunc(23);
+```

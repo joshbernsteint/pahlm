@@ -1,4 +1,4 @@
-import { basicRegexes, customCharactersAndMacrosRegexes, headingsRegexes, listRegexes } from "./regexes.js";
+import { basicRegexes, commandRegexes, escapeRegexes, headingsRegexes, listRegexes } from "./regexes.js";
 import {Stack, Queue} from "../utils/index.js";
 import mathParser from "./math/math.js";
 
@@ -6,20 +6,27 @@ import mathParser from "./math/math.js";
 
 
 
-function parseFile(str, trimInput=true){
+function parseFile(str, trimInput=true, flags={
+    maxBracesDepth: {
+        amount: 3,
+        pattern:  '\\{([^}{]*(?:\\{[^}{]*(?:\\{[^}{]*(?:\\{[^}{]*\\}[^}{]*)*\\}[^}{]*)*\\}[^}{]*)*)\\}',
+    }
+}){
 
     const listDepth = new Stack();
-    const flags = {
-        
-    };
+    // console.log(str);
+
+
     const basicKeys = Object.keys(basicRegexes);
     const listKeys = Object.keys(listRegexes);
-    const customKeys = Object.keys(customCharactersAndMacrosRegexes);
+    const customKeys = Object.keys(escapeRegexes);
+
+    // console.log(headingsRegexes);
 
 
     //Replace all escape characters
     for (let i = 0; i < customKeys.length; i++) {
-        const body = customCharactersAndMacrosRegexes[customKeys[i]];
+        const body = escapeRegexes[customKeys[i]];
         str = str.replaceAll(body.pattern, body.replace + " ");
     }
 
@@ -90,16 +97,28 @@ function parseFile(str, trimInput=true){
         }
     }
 
+    //Commands
+    commandRegexes.forEach(command => {
+        const regex = new RegExp(command.pattern + flags.maxBracesDepth.pattern.repeat(command.arguments),'gm');
+        queue.string = queue.string.replaceAll(regex, (...args) => {
+            return command.run(flags,...args);
+        })
+
+    });
+
+
     //Apply the queue and return
     return queue.applyQueue((x, list) => {
         for (let i = 0; i < list.length; i++) {
             const el = list[i];
-            x = x.replace(el.pattern,(s,m1, offset) => {
+            x = x.replaceAll(el.pattern,(s,...args) => {
+                const g1 = (el.groups) ? args[el.groups-1] : args[0];
+                const offset = (el.groups) ? args[el.groups] : args[1];
                 if(offset >= el.range[0]){
                     if(el.type === "inlineMath" || el.type === "blockLineMath")
-                        return el.start + mathParser(m1) + el.end;
+                        return el.start + mathParser(g1, flags) + el.end;
                     else
-                        return el.start + (m1 ? m1 : "") + el.end;
+                        return el.start + (g1 ? g1 : "") + el.end;
                 }
                 else{
                     return s;
