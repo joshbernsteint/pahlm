@@ -33,8 +33,8 @@ function toLetters(num){
 
 //Taken from StackOverflow and modified
 function matchCurlyBraces(depth=3){
-  const basePatterns = ['\\{([^}{]*(?:','[^}{]*)*)\\}'];
-  return basePatterns[0].repeat(depth) + '\\{[^}{]*\\}' + basePatterns[1].repeat(depth);
+  const basePatterns = ['\{([^}{]*(?:','[^}{]*)*)\}'];
+  return new RegExp(basePatterns[0].repeat(depth) + '\{[^}{]*\}' + basePatterns[1].repeat(depth));
 }
 
 export{

@@ -1,4 +1,5 @@
 import defaultCommands from './commands.js';
+import  mathParser  from './math.js';
 
 const mathOperators = [
     { pattern: /\\le/g, replace: "&le;" },
@@ -71,16 +72,40 @@ const mathIdentifiers = [
  */
 const mathMacros = [
     {
-        pattern: /([^\s]+|(\{.+?\}))\^((\{.+?\})|.+?)/gm,
-        operator: "^",
-        start: "<msup>",
-        end: "</msup>",
+        pattern: "(#@|#!)\\^(#@|#!)",
+        customArgument: [undefined, /[^\s]+/,undefined,/[^\s]+/],
+        giveFlags: true,
+        run: (flags, s, ...args) => {
+            args.splice(-2)
+            args = args.slice(0,4);
+            let base;
+            let sub;
+            for (let i = 0; i < args.length; i++) {
+                const element = args[i];
+                if(element[0] === "{") continue;
+                else if(base) sub = element;
+                else base = element;
+            }
+            return `<msup>${mathParser(base, flags)}${mathParser(sub, flags)}</msup>`;
+        }
     },
     {
-        pattern: /([^\s]+|(\{.+?\}))\_((\{.+?\})|.+?)/gm,
-        operator: "_",
-        start: "<msub>",
-        end: "</msub>",
+        pattern: "(#@|#!)\\_(#@|#!)",
+        customArgument: [undefined, /[^\s]+/,undefined,/[^\s]+/],
+        giveFlags: true,
+        run: (flags, s, ...args) => {
+            args.splice(-2)
+            args = args.slice(0,4);
+            let base;
+            let sub;
+            for (let i = 0; i < args.length; i++) {
+                const element = args[i];
+                if(element[0] === "{") continue;
+                else if(base) sub = element;
+                else base = element;
+            }
+            return `<msub>${mathParser(base, flags)}${mathParser(sub, flags)}</msub>`;
+        },
     },
 ];
 

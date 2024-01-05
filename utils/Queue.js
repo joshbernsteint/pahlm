@@ -7,7 +7,7 @@ class Queue{
     }
 
 
-    IsRangeAccessible(startIndex, endIndex, type){
+    IsRangeAccessible(startIndex, endIndex){
 
         let validRange = true;
         this.inaccessibleRanges.every(range => {
@@ -23,26 +23,16 @@ class Queue{
         return validRange;
     }
 
-    addToQueue(regex, startIndex, endIndex, type){
+    addToQueue(objBody, range){
+        if(!this.IsRangeAccessible(...range)) return -1;
 
-        if(regex.substring.substring(regex.sliceLength,regex.substring.length - regex.sliceLength).length === 0) return -1;
-        else if(this.IsRangeAccessible(startIndex, endIndex)){
-            const newRange = [startIndex, endIndex];
-            this.currentQueue.push({
-                ...regex,
-                range: newRange,
-                type: type,
-            });
-
-            //If this regex prevents recursion inside of it
-            if(regex.preventRecursive){
-                this.inaccessibleRanges.push(newRange);
-            }
-            return 0;
-        }
-        else{
-            return -1;
-        }
+        if(objBody.preventRecursive)
+            this.inaccessibleRanges.push(range);
+        
+        this.currentQueue.push({
+            ...objBody,
+            range: range,
+        });
     }
 
     setString(str){
@@ -51,14 +41,25 @@ class Queue{
 
     clear(){
         this.currentQueue = [];
+        this.inaccessibleRanges = [];
         this.string = "";
     }
 
     applyQueue(fun){
-        const result = fun(this.string, this.currentQueue);
+        const result = fun(this.string, this.currentQueue, this.currentQueue.length);
         this.string = result;
         this.currentQueue = [];
+        this.inaccessibleRanges = [];
         return result;
+    }
+
+    /**
+     * Matches the queue string against the given pattern
+     * @param {RegExp} pattern Pattern to match against
+     * @returns An array of matches
+     */
+    match(pattern){
+        return Array.from(this.string.matchAll(pattern));
     }
 };
 
