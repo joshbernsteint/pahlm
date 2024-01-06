@@ -62,13 +62,13 @@ const basicRegexes = [
         pattern: /---/gm,
         run: () => "&#8212;",
     },
-    { pattern: '#######\\s#!', customArgument: /(.*)/, run: (s,g1) => `<h7>${g1}</h7>` },
-    { pattern: '######\\s#!', customArgument: /(.*)/, run: (s,g1) => `<h6>${g1}</h6>` },
-    { pattern: '#####\\s#!', customArgument: /(.*)/, run: (s,g1) => `<h5>${g1}</h5>` },
-    { pattern: '####\\s#!', customArgument: /(.*)/, run: (s,g1) => `<h4>${g1}</h4>` },
-    { pattern: '###\\s#!', customArgument: /(.*)/, run: (s,g1) => `<h3>${g1}</h3>` },
-    { pattern: '##\\s#!', customArgument: /(.*)/, run: (s,g1) => `<h2>${g1}</h2><hr>`},
-    { pattern: '#\\s#!', customArgument: /(.*)/, run: (s,g1) => `<h1>${g1}</h1><hr>`},
+    { pattern: '#######\\s#!', customArgument: /(.*)/, run: (s,g1) => `<h7>${g1}</h7>`, name: /#######\s/g},
+    { pattern: '######\\s#!', customArgument: /(.*)/, run: (s,g1) => `<h6>${g1}</h6>`, name: /######\s/g },
+    { pattern: '#####\\s#!', customArgument: /(.*)/, run: (s,g1) => `<h5>${g1}</h5>`, name: /#####\s/g },
+    { pattern: '####\\s#!', customArgument: /(.*)/, run: (s,g1) => `<h4>${g1}</h4>`, name: /####\s/g },
+    { pattern: '###\\s#!', customArgument: /(.*)/, run: (s,g1) => `<h3>${g1}</h3>`, name: /###\s/g },
+    { pattern: '##\\s#!', customArgument: /(.*)/, run: (s,g1) => `<h2>${g1}</h2><hr>`, name: /##\s/g},
+    { pattern: '#\\s#!', customArgument: /(.*)/, run: (s,g1) => `<h1>${g1}</h1><hr>`, name: /#\s/g},
 ];
 
 /**

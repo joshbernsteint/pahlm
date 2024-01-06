@@ -33,6 +33,7 @@ class Queue{
             ...objBody,
             range: range,
         });
+        return 0;
     }
 
     setString(str){

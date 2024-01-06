@@ -64,18 +64,15 @@ function parseFile(str, trimInput=true, flags={
 
     //Basic changes
     basicRegexes.forEach(element => {
-        const fullPattern = createPattern(element.pattern, element.customArgument, flags);
+        const fullPattern = createPattern(element.pattern, element.customArgument, flags, (element.variableOffset) ? true : false);
         const matches = queue.match(fullPattern[0]);
         matches.forEach(m => {
             const offset = m.index;
-            delete m.index;
-            delete m.input;
-            delete m.groups;
             queue.addToQueue({
-                matchDetails: m.slice(1),
                 run: element.run,
                 giveFlags: (element.giveFlags) ? true : false,
                 pattern: fullPattern[0],
+                preventRecursive: element.preventRecursive ? true : false,
                 offsetIndex: fullPattern[1]
             }, [offset, (m[0].length === 0) ? offset :  m[0].length + offset - 1]);
         })

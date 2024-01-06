@@ -1,6 +1,7 @@
 # Joshua Bernstein's *Pahlm*
-## Math capabilities
-$50 + 5x_{12 + 3y} + 2x^{\alpha + 4} \text{Hello there}$
+### Math capabilities
+
+$\frac{-b \pm \sqrt{b^2 - 4ac}}{2 \root{4a}{3}}$
 
 `int x = 14;`
 ```{js}

@@ -1,85 +1,113 @@
 import defaultCommands from './commands.js';
 import  mathParser  from './math.js';
 
-const mathOperators = [
-    { pattern: /\\le/g, replace: "&le;" },
-    { pattern: /\\ge/g, replace: "&ge;" },
-    { pattern: /\+/g, replace: "&plus;" },
-    { pattern: /-/g, replace: "&minus;" },
-    { pattern: /\\times/g, replace: "&times;"},
-    { pattern: /\\div/g, replace: "&divide;"},
-    { pattern: /=/g, replace: "&equals;" },
-    { pattern: /\\ne/g, replace: "&ne;" },
-    { pattern: /\\pm/g, replace: "&plusmn;"},
-    { pattern: /\\not/g, replace: "&not;" },
-    { pattern: /\\cup/g, replace: "&cup;" },
-    { pattern: /\\cap/g, replace: "&cap;" },
-];
-
 const mathIdentifiers = [
-    { pattern: /\\Alpha/g, replace: '&Alpha;' },
-    { pattern: /\\alpha/g, replace: '&alpha;' },
-    { pattern: /\\Beta/g, replace: '&Beta;' },
-    { pattern: /\\beta/g, replace: '&beta;' },
-    { pattern: /\\Gamma/g, replace: '&Gamma;' },
-    { pattern: /\\gamma/g, replace: '&gamma;' },
-    { pattern: /\\Delta/g, replace: '&Delta;' },
-    { pattern: /\\delta/g, replace: '&delta;' },
-    { pattern: /\\Epsilon/g, replace: '&Epsilon;' },
-    { pattern: /\\epsilon/g, replace: '&epsilon;' },
-    { pattern: /\\Zeta/g, replace: '&Zeta;' },
-    { pattern: /\\zeta/g, replace: '&zeta;' },
-    { pattern: /\\Eta/g, replace: '&Eta;' },
-    { pattern: /\\eta/g, replace: '&eta;' },
-    { pattern: /\\Theta/g, replace: '&Theta;' },
-    { pattern: /\\theta/g, replace: '&theta;' },
-    { pattern: /\\Iota/g, replace: '&Iota;' },
-    { pattern: /\\iota/g, replace: '&iota;' },
-    { pattern: /\\Kappa/g, replace: '&Kappa;' },
-    { pattern: /\\kappa/g, replace: '&kappa;' },
-    { pattern: /\\Lambda/g, replace: '&Lambda;' },
-    { pattern: /\\lambda/g, replace: '&lambda;' },
-    { pattern: /\\Mu/g, replace: '&Mu;' },
-    { pattern: /\\mu/g, replace: '&mu;' },
-    { pattern: /\\Nu/g, replace: '&Nu;' },
-    { pattern: /\\nu/g, replace: '&nu;' },
-    { pattern: /\\Xi/g, replace: '&Xi;' },
-    { pattern: /\\xi/g, replace: '&xi;' },
-    { pattern: /\\Omicron/g, replace: '&Omicron;' },
-    { pattern: /\\omicron/g, replace: '&omicron;' },
-    { pattern: /\\Pi/g, replace: '&Pi;' },
-    { pattern: /\\pi/g, replace: '&pi;' },
-    { pattern: /\\Rho/g, replace: '&Rho;' },
-    { pattern: /\\rho/g, replace: '&rho;' },
-    { pattern: /\\Sigma/g, replace: '&Sigma;' },
-    { pattern: /\\sigma/g, replace: '&sigma;' },
-    { pattern: /\\Tau/g, replace: '&Tau;' },
-    { pattern: /\\tau/g, replace: '&tau;' },
-    { pattern: /\\Upsilon/g, replace: '&Upsilon;' },
-    { pattern: /\\upsilon/g, replace: '&upsilon;' },
-    { pattern: /\\Phi/g, replace: '&Phi;' },
-    { pattern: /\\phi/g, replace: '&phi;' },
-    { pattern: /\\Chi/g, replace: '&Chi;' },
-    { pattern: /\\chi/g, replace: '&chi;' },
-    { pattern: /\\Psi/g, replace: '&Psi;' },
-    { pattern: /\\psi/g, replace: '&psi;' },
-    { pattern: /\\Omega/g, replace: '&Omega;' },
-    { pattern: /\\omega/g, replace: '&omega;' }
+    /**     Operators           */
+    { pattern: /\\le/gm, replace: "&le;", op: true, },
+    { pattern: /\\ge/gm, replace: "&ge;", op: true, },
+    { pattern: /\+/gm, replace: "&plus;", op: true, },
+    { pattern: /-/gm, replace: "&minus;", op: true, },
+    { pattern: /\\times/gm, replace: "&times;", op: true,},
+    { pattern: /\\div/gm, replace: "&divide;", op: true,},
+    { pattern: /=/gm, replace: "&equals;", op: true, },
+    { pattern: /\\ne/gm, replace: "&ne;", op: true, },
+    { pattern: /\\pm/gm, replace: "&plusmn;", op: true,},
+    { pattern: /\\not/gm, replace: "&not;", op: true, },
+    { pattern: /\\cup/gm, replace: "&cup;", op: true, },
+    { pattern: /\\cap/gm, replace: "&cap;", op: true, },
+
+    /**     Arrow Regexes        */
+    { pattern: /\\rarr/gm, replace: "&rarr;", op: true, },
+    { pattern: /\\Rarr/gm, replace: "&DoubleRightArrow;", op: true, },
+    { pattern: /\\Longrarr/gm, replace: "&LongRightArrow;", op: true, },
+    { pattern: /\\LongRarr/gm, replace: "&DoubleLongRightArrow;", op: true, },
+
+    { pattern: /\\larr/gm, replace: "&larr;", op: true, },
+    { pattern: /\\Larr/gm, replace: "&DoubleLeftArrow;", op: true, },
+    { pattern: /\\Longlarr/gm, replace: "LongLeftArrow;", op: true, },
+    { pattern: /\\LongLarr/gm, replace: "&DoubleLongLeftArrow;", op: true, },
+
+    { pattern: /\\lrarr/gm, replace: "&LeftRightArrow;", op: true, },
+    { pattern: /\\LRarr/gm, replace: "&DoubleLeftRightArrow;", op: true, },
+    { pattern: /\\Longlrarr/gm, replace: "&LongLeftRightArrow;", op: true, },
+    { pattern: /\\LongLRarr/gm, replace: "&DoubleLongLeftRightArrow;", op: true, },
+
+
+    /**     Other */
+    { pattern: /\\;/gm, replace: "&nbsp;", },
+
+    /**     Greek Letters        */
+    { pattern: /\\Alpha/gm, replace: '&Alpha;' },
+    { pattern: /\\alpha/gm, replace: '&alpha;' },
+    { pattern: /\\Beta/gm, replace: '&Beta;' },
+    { pattern: /\\beta/gm, replace: '&beta;' },
+    { pattern: /\\Gamma/gm, replace: '&Gamma;' },
+    { pattern: /\\gamma/gm, replace: '&gamma;' },
+    { pattern: /\\Delta/gm, replace: '&Delta;' },
+    { pattern: /\\delta/gm, replace: '&delta;' },
+    { pattern: /\\Epsilon/gm, replace: '&Epsilon;' },
+    { pattern: /\\epsilon/gm, replace: '&epsilon;' },
+    { pattern: /\\Zeta/gm, replace: '&Zeta;' },
+    { pattern: /\\zeta/gm, replace: '&zeta;' },
+    { pattern: /\\Eta/gm, replace: '&Eta;' },
+    { pattern: /\\eta/gm, replace: '&eta;' },
+    { pattern: /\\Theta/gm, replace: '&Theta;' },
+    { pattern: /\\theta/gm, replace: '&theta;' },
+    { pattern: /\\Iota/gm, replace: '&Iota;' },
+    { pattern: /\\iota/gm, replace: '&iota;' },
+    { pattern: /\\Kappa/gm, replace: '&Kappa;' },
+    { pattern: /\\kappa/gm, replace: '&kappa;' },
+    { pattern: /\\Lambda/gm, replace: '&Lambda;' },
+    { pattern: /\\lambda/gm, replace: '&lambda;' },
+    { pattern: /\\Mu/gm, replace: '&Mu;' },
+    { pattern: /\\mu/gm, replace: '&mu;' },
+    { pattern: /\\Nu/gm, replace: '&Nu;' },
+    { pattern: /\\nu/gm, replace: '&nu;' },
+    { pattern: /\\Xi/gm, replace: '&Xi;' },
+    { pattern: /\\xi/gm, replace: '&xi;' },
+    { pattern: /\\Omicron/gm, replace: '&Omicron;' },
+    { pattern: /\\omicron/gm, replace: '&omicron;' },
+    { pattern: /\\Pi/gm, replace: '&Pi;' },
+    { pattern: /\\pi/gm, replace: '&pi;' },
+    { pattern: /\\Rho/gm, replace: '&Rho;' },
+    { pattern: /\\rho/gm, replace: '&rho;' },
+    { pattern: /\\Sigma/gm, replace: '&Sigma;' },
+    { pattern: /\\sigma/gm, replace: '&sigma;' },
+    { pattern: /\\Tau/gm, replace: '&Tau;' },
+    { pattern: /\\tau/gm, replace: '&tau;' },
+    { pattern: /\\Upsilon/gm, replace: '&Upsilon;' },
+    { pattern: /\\upsilon/gm, replace: '&upsilon;' },
+    { pattern: /\\Phi/gm, replace: '&Phi;' },
+    { pattern: /\\phi/gm, replace: '&phi;' },
+    { pattern: /\\Chi/gm, replace: '&Chi;' },
+    { pattern: /\\chi/gm, replace: '&chi;' },
+    { pattern: /\\Psi/gm, replace: '&Psi;' },
+    { pattern: /\\psi/gm, replace: '&psi;' },
+    { pattern: /\\Omega/gm, replace: '&Omega;' },
+    { pattern: /\\omega/gm, replace: '&omega;' }
 ];
 
 /**
  * Contains simple math macros
  */
 const mathMacros = [
+    { pattern: "\\\\text#@", giveFlags: true, run: (flags, s, ...args) => defaultCommands.text(flags, args), name: "\\\\text" },
+    { pattern: "\\\\sqrt#@", giveFlags: true, run: (flags, s, ...args) => defaultCommands.getBracketArgs(((g1) => `<msqrt>${mathParser(g1,flags)}</msqrt>`), args),  name: "\\\\sqrt"},
+    { pattern: "\\\\root#@#@", giveFlags: true, run: (flags, s, ...args) => defaultCommands.getBracketArgs(((g1, g2) => `<mroot>${mathParser(g1,flags)}${mathParser(g2,flags)}</mroot>`), args),  name: "\\\\root"},
+    { pattern: "\\\\frac#@#@", giveFlags: true, run: (flags, s, ...args) => defaultCommands.getBracketArgs(((g1, g2) => `<mfrac>${mathParser(g1,flags)}${mathParser(g2,flags)}</mfrac>`), args),  name: "\\\\frac"},
     {
         pattern: "(#@|#!)\\^(#@|#!)",
-        customArgument: [undefined, /[^\s]+/,undefined,/[^\s]+/],
+        customArgument: [undefined, /[^\s\}\{}]+/,undefined,/[^\s\}\{}]+/],
+        variableOffset: true,
         giveFlags: true,
+        name: "\\^",
         run: (flags, s, ...args) => {
+            args = args.filter(el => el != undefined);
             args.splice(-2)
             args = args.slice(0,4);
             let base;
             let sub;
+  
             for (let i = 0; i < args.length; i++) {
                 const element = args[i];
                 if(element[0] === "{") continue;
@@ -90,11 +118,15 @@ const mathMacros = [
         }
     },
     {
-        pattern: "(#@|#!)\\_(#@|#!)",
+        pattern: "(#@|#!)_(#@|#!)",
         customArgument: [undefined, /[^\s]+/,undefined,/[^\s]+/],
+        name: "_",
+        customOffset: true,
+        variableOffset: true,
         giveFlags: true,
         run: (flags, s, ...args) => {
-            args.splice(-2)
+            args = args.filter(el => el != undefined);
+            args.splice(-2);
             args = args.slice(0,4);
             let base;
             let sub;
@@ -109,14 +141,8 @@ const mathMacros = [
     },
 ];
 
-const mathCommands = [
-    { pattern: '\\\\text', arguments: 1, offsetIndex: 2, run: defaultCommands.text },
-]
-
 
 export{
-    mathOperators,
     mathMacros,
     mathIdentifiers,
-    mathCommands,
 };
