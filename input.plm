@@ -1,10 +1,8 @@
 # Joshua Bernstein's *Pahlm*
 ### Math capabilities
 
-$\frac{-b \pm \sqrt{b^2 - 4ac}}{2 \root{4a}{3}}$
+$e^\sqrt{x}$
 
-`int x = 14;`
-```{js}
-    int y = 23;
-    x + y = modFunc(23);
-```
+$\frac{sin(\sqrt{x} + a) e^\sqrt{x} }{\sqrt{x}}$   
+
+$\int{2}{5}\frac{\text{sin}(\sqrt{x} + a) e^\sqrt{x} }{\sqrt{x}}dx$

@@ -32,7 +32,7 @@ function createPattern(pattern, argument, flags, varOffset=false, name=/[]/){
             return [new RegExp(base[0], 'gm'), (varOffset) ? undefined : (argIndex + 1)];
         }
         else{
-            return [new RegExp("(?<!\\{[^]*)#1#N(?<!\\s*\\})#2".replace(/#1/,base[0]).replace(/#N/, name).replace(/#2/,base[1]), 'gm'), (varOffset) ? undefined : (argIndex + 1)]
+            return [new RegExp("(?<!\\{[^\\\\\\}]*)#1#N(?<!\\s*\\})#2".replace(/#1/,base[0]).replace(/#N/, name).replace(/#2/,base[1]), 'gm'), (varOffset) ? undefined : (argIndex + 1)]
         }
     }
 }

@@ -91,13 +91,9 @@ const mathIdentifiers = [
  * Contains simple math macros
  */
 const mathMacros = [
-    { pattern: "\\\\text#@", giveFlags: true, run: (flags, s, ...args) => defaultCommands.text(flags, args), name: "\\\\text" },
-    { pattern: "\\\\sqrt#@", giveFlags: true, run: (flags, s, ...args) => defaultCommands.getBracketArgs(((g1) => `<msqrt>${mathParser(g1,flags)}</msqrt>`), args),  name: "\\\\sqrt"},
-    { pattern: "\\\\root#@#@", giveFlags: true, run: (flags, s, ...args) => defaultCommands.getBracketArgs(((g1, g2) => `<mroot>${mathParser(g1,flags)}${mathParser(g2,flags)}</mroot>`), args),  name: "\\\\root"},
-    { pattern: "\\\\frac#@#@", giveFlags: true, run: (flags, s, ...args) => defaultCommands.getBracketArgs(((g1, g2) => `<mfrac>${mathParser(g1,flags)}${mathParser(g2,flags)}</mfrac>`), args),  name: "\\\\frac"},
     {
         pattern: "(#@|#!)\\^(#@|#!)",
-        customArgument: [undefined, /[^\s\}\{}]+/,undefined,/[^\s\}\{}]+/],
+        customArgument: [undefined, /[^\s]+/,undefined,/[^\s]*[^\{]/],
         variableOffset: true,
         giveFlags: true,
         name: "\\^",
@@ -119,7 +115,7 @@ const mathMacros = [
     },
     {
         pattern: "(#@|#!)_(#@|#!)",
-        customArgument: [undefined, /[^\s]+/,undefined,/[^\s]+/],
+        customArgument: [undefined, /[^\s]+/,undefined,/[^\s]*[^\{]/],
         name: "_",
         customOffset: true,
         variableOffset: true,
@@ -139,6 +135,11 @@ const mathMacros = [
             return `<msub>${mathParser(base, flags)}${mathParser(sub, flags)}</msub>`;
         },
     },
+    { pattern: "\\\\text#@", giveFlags: true, run: (flags, s, ...args) => defaultCommands.text(flags, args), name: "\\\\text" },
+    { pattern: "\\\\sqrt#@", giveFlags: true, run: (flags, s, ...args) => defaultCommands.getBracketArgs(((g1) => `<msqrt>${mathParser(g1,flags)}</msqrt>`), args),  name: "\\\\sqrt"},
+    { pattern: "\\\\root#@#@", giveFlags: true, run: (flags, s, ...args) => defaultCommands.getBracketArgs(((g1, g2) => `<mroot>${mathParser(g1,flags)}${mathParser(g2,flags)}</mroot>`), args),  name: "\\\\root"},
+    { pattern: "\\\\frac#@#@", giveFlags: true, run: (flags, s, ...args) => defaultCommands.getBracketArgs(((g1, g2) => `<mfrac>${mathParser(g1,flags)}${mathParser(g2,flags)}</mfrac>`), args),  name: "\\\\frac"},
+    { pattern: "\\\\int#@#@", giveFlags: true, run: (flags, s, ...args) => defaultCommands.getBracketArgs(((g1, g2) => `<msubsup><mo>&#x222B;</mo>${mathParser(g1,flags)}${mathParser(g2,flags)}</msubsup>`), args),  name: "\\\\int"},
 ];
 
 

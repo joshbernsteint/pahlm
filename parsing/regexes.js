@@ -23,7 +23,7 @@ const basicRegexes = [
         customArgument: /(.*?)/,
         preventRecursive: true,
         giveFlags: true,
-        run: (flags, s, g1) => `<br><math>${mathParser(g1, flags)}</math><br>`,
+        run: (flags, s, g1) => `<br><math display="block">${mathParser(g1, flags)}</math><br>`,
     },
     // blockcode
     {

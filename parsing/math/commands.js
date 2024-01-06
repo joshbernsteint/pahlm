@@ -4,7 +4,7 @@ import parseFile from "../parser.js"
  * @param {string} input 
  */
 function text(flags, args){
-    return getBracketArgs((g1) => `<span>${parseFile(g1, false, flags)}</span>`, args);
+    return getBracketArgs((g1) => `<mi>${parseFile(g1, false, flags)}</mi>`, args);
 }
 
 

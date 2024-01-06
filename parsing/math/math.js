@@ -14,6 +14,7 @@ function mathParser(string, flags){
     // Math macros and commands
     mathMacros.forEach(command => {
         const fullPattern = createPattern(command.pattern, command.customArgument, flags, (command.variableOffset) ? true : false, command.name);
+        // console.log(fullPattern[0], command.pattern);
         mathQueue.match(fullPattern[0]).forEach(match => {
             const offset = match.index;
             match = match.filter(el => el != undefined);
@@ -62,6 +63,7 @@ function mathParser(string, flags){
         return s;
     })
 
+    // console.log(mathQueue);
 
     // Apply the queue
     mathQueue.applyQueue((str, q) => {
