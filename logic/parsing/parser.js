@@ -1,5 +1,5 @@
 import { basicRegexes, escapeRegexes, listRegexes } from "./regexes.js";
-import {Stack, Queue, createPattern} from "../utils/index.js";
+import {Stack, Queue, createPattern, findOffset} from "../utils/index.js";
 
 
 
@@ -79,13 +79,17 @@ function parseFile(str, trimInput=true, flags={
 
     });
 
+
+
     queue.applyQueue((str, q) => {
         q.forEach(el => {
             str = str.replace(el.pattern, (...args) => {
-                if(args[el.offsetIndex] >= el.range[0])
+                const offset = (el.offsetIndex) ? args[el.offsetIndex] : findOffset(...args);
+                if(offset >= el.range[0])
                     return ( el.giveFlags ? el.run(flags,...args) : el.run(...args));
-                else 
+                else {
                     return args[0];
+                }
             });
         });
         return str;

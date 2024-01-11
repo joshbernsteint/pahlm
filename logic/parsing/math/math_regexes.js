@@ -15,6 +15,8 @@ const mathIdentifiers = [
     { pattern: /\\not/gm, replace: "&not;", op: true, },
     { pattern: /\\cup/gm, replace: "&cup;", op: true, },
     { pattern: /\\cap/gm, replace: "&cap;", op: true, },
+    { pattern: /\(/gm, replace: "&lpar;", op: true, },
+    { pattern: /\)/gm, replace: "&rpar;", op: true, },
 
     /**     Arrow Regexes        */
     { pattern: /\\rarr/gm, replace: "&rarr;", op: true, },
@@ -139,6 +141,7 @@ const mathMacros = [
     { pattern: "\\\\sqrt#@", giveFlags: true, run: (flags, s, ...args) => defaultCommands.getBracketArgs(((g1) => `<msqrt>${mathParser(g1,flags)}</msqrt>`), args),  name: "\\\\sqrt"},
     { pattern: "\\\\root#@#@", giveFlags: true, run: (flags, s, ...args) => defaultCommands.getBracketArgs(((g1, g2) => `<mroot>${mathParser(g1,flags)}${mathParser(g2,flags)}</mroot>`), args),  name: "\\\\root"},
     { pattern: "\\\\frac#@#@", giveFlags: true, run: (flags, s, ...args) => defaultCommands.getBracketArgs(((g1, g2) => `<mfrac>${mathParser(g1,flags)}${mathParser(g2,flags)}</mfrac>`), args),  name: "\\\\frac"},
+    { pattern: "\\\\binom#@#@", giveFlags: true, run: (flags, s, ...args) => defaultCommands.getBracketArgs(((g1, g2) => `<mo>&lpar;</mo><mfrac linethickness="0">${mathParser(g1,flags)}${mathParser(g2,flags)}</mfrac><mo>&rpar;</mo>`), args),  name: "\\\\frac"},
     { pattern: "\\\\int#@#@", giveFlags: true, run: (flags, s, ...args) => defaultCommands.getBracketArgs(((g1, g2) => `<msubsup><mo>&#x222B;</mo>${mathParser(g1,flags)}${mathParser(g2,flags)}</msubsup>`), args),  name: "\\\\int"},
 ];
 

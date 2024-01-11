@@ -1,0 +1,11 @@
+{
+    "iconDefinitions": {
+        "_fileIcon": {
+            "iconPath": "./file_icon.png"
+        }
+    },
+    "fileExtensions": {
+        "plm": "_fileIcon"
+    },
+    "showLanguageModeIcons": true,
+}

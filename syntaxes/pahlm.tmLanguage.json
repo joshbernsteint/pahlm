@@ -1,0 +1,22 @@
+{
+	"$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+	"name": "PaHLM",
+	"patterns": [
+		{
+			"include": "#keywords"
+		},
+		{
+			"include": "#math"
+		}
+	],
+	"repository": {
+		"math": {
+			"name": "keyword.dollar.pahlm",
+			"begin": "\\$",
+			"end": "\\$",
+			"patterns": [
+			]
+		}
+	},
+	"scopeName": "text.html.pahlm"
+}

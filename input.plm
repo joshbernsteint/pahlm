@@ -1,8 +1,0 @@
-# Joshua Bernstein's *Pahlm*
-### Math capabilities
-
-$e^\sqrt{x}$
-
-$\frac{sin(\sqrt{x} + a) e^\sqrt{x} }{\sqrt{x}}$   
-
-$\int{2}{5}\frac{\text{sin}(\sqrt{x} + a) e^\sqrt{x} }{\sqrt{x}}dx$

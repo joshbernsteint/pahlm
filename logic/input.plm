@@ -1,0 +1,14 @@
+# Joshua Bernstein's *Pahlm*
+### Math capabilities
+
+$e^\sqrt{x}$
+
+/[\binom{n}{k}]/
+
+\table{Hello there}---
+
+$\not 5x$
+
+\int{2}{5}\frac{\text{sin}(\sqrt{x} + a) e^\sqrt{x} }{\sqrt{x}}dx
+/[\int{2}{5}\frac{\text{sin}(\sqrt{x} + a) e^\sqrt{x} }{\sqrt{x}}dx]/
+<!-- Hello -->

@@ -1,17 +1,29 @@
 {
-  "name": "joshdown",
-  "version": "1.0.0",
-  "description": "",
-  "main": "app.js",
-  "type": "module",
-  "scripts": {
-    "start": "node app.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+  "name": "pahlm",
+  "displayName": "pahlm",
+  "description": "A note-taking languaging combining the ease of use of markdown with the math capabilities of LaTeX.",
+  "version": "0.0.1",
+  "engines": {
+    "vscode": "^1.85.0"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "dependencies": {
-    "html-entities": "^2.4.0"
+  "categories": [
+    "Programming Languages"
+  ],
+  "contributes": {
+    "languages": [{
+      "id": "pahlm",
+      "aliases": ["PaHLM", "pahlm"],
+      "extensions": [".plm"],
+      "configuration": "./language-configuration.json",
+      "icon": {
+        "light": "./themes/file_icon.png",
+        "dark": "./themes/file_icon.png"
+      }
+    }],
+    "grammars": [{
+      "language": "pahlm",
+      "scopeName": "text.html.pahlm",
+      "path": "./syntaxes/pahlm.tmLanguage.json"
+    }]
   }
 }

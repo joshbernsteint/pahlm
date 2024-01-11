@@ -32,6 +32,14 @@ const basicRegexes = [
         preventRecursive: true,
         run: (s,g1, g2) => `<pre><code>${g2}</code></pre>`,
     },
+    {
+        pattern: "\\\\table#@", preventRecursive: true, giveFlags: true,
+        name: "\\\\table",
+        run: (flags, s, g1) => {
+            console.log(g1);
+            return g1;
+        },
+    },
     // code
     {
         pattern: "\\`#!\\`",
