@@ -4,59 +4,13 @@
 	"patterns": [
 		{
 			"include": "#comment"
-		},
-		{
-			"include": "#math"
-		},
-		{"include": "#math-block"},
-		{
-			"include": "#command"
-		},
-		{"include": "#in_brackets"},
-		{
-			"include": "#text"
 		}
 	],
 	"repository": {
-		"text": {
-			"name": "basic.text",
-			"match": "[^\\$|\\}|\\{]*",
-			"patterns": [{"include": "#math"}, {"include": "#command"}]
-		},
 		"comment": {
 			"name": "comment.block",
 			"begin": "<!--",
 			"end": "-->"	
-		},
-		"math": {
-			"name": "keyword.math.inline",
-			"begin": "\\$",
-			"end": "\\$",
-			"patterns": [
-				{
-					"include": "#command"
-				}
-			]
-		},
-		"math-block": {
-			"name": "keyword.math.block",
-			"begin": "\\/\\[",
-			"end": "\\]\\/",
-			"patterns": [{"include": "#command"}]
-		},
-		"command": {
-			"name": "keyword.command",
-			"match": "\\\\[^\\s\\\\][a-zA-Z0-9]+",
-			"patterns": [
-			]
-		},
-		"in_brackets": {
-			"name": "basic.arg",
-			"begin": "\\{",
-			"end": "\\}",
-			"patterns": [
-				{"include": "#comment"},{"include": "#math"}, {"include": "#command"}, {"include": "#in_brackets"}
-			]
 		}
 	},
 	"scopeName": "text.html.pahlm"

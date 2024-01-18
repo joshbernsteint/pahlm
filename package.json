@@ -25,13 +25,6 @@
       "language": "pahlm",
       "scopeName": "text.html.pahlm",
       "path": "./syntaxes/pahlm.tmLanguage.json"
-    }],
-    "themes": [
-        {
-          "label": "pahlm_theme",
-          "uiTheme": "vs-dark",
-          "path": "./themes/test-color-theme.json"
-        }
-    ]
+    }]
   }
 }
