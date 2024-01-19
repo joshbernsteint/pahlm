@@ -4,13 +4,83 @@
 	"patterns": [
 		{
 			"include": "#comment"
+		},
+		{
+			"include": "#commands2"
+		},
+		{
+			"include": "#math"
+		},
+		{
+			"include": "#headings"
 		}
 	],
 	"repository": {
 		"comment": {
-			"name": "comment.block",
+			"name": "comment.block.pahlm",
 			"begin": "<!--",
 			"end": "-->"	
+		},
+		"math": {
+			"patterns": [
+				{
+					"name": "keyword.other.unit.math.string.inline",
+					"begin": "\\$",
+					"end": "\\$",
+					"beginCaptures": {
+						"0": {
+							"name": "keyword.control.math.inline"
+						}
+					},
+					"endCaptures": {
+						"0": {
+							"name": "keyword.control.math.inline"
+						}
+					},
+					"patterns": [
+						{
+							"name": "constant.character.escape.math.pahlm",
+							"match": "(?x)\\\\ (\n\\\\\t\t\t |\n[\\$?]   |\n[0-3]\\d{,2}\t |\n[4-7]\\d?\t\t|\nx[a-fA-F0-9]{,2} |\nu[a-fA-F0-9]{,4} |\nU[a-fA-F0-9]{,8} )"
+						},
+						{
+							"include": "#commands"
+						}
+					]
+				},
+				{
+					"name": "keyword.other.unit.math.string.block",
+					"begin": "\\/\\[",
+					"end": "\\]\\/",
+					"beginCaptures": {
+						"0": {
+							"name": "keyword.control.math.inline"
+						}
+					},
+					"endCaptures": {
+						"0": {
+							"name": "keyword.control.math.inline"
+						}
+					}					
+				}
+			]
+		},
+		"commands": {
+			"name": "support.function.pahlm",
+			"match": "\\\\[^\\s\\\\\\W]*"
+		},
+		"commands2":{
+			"begin": "\\\\(?x)\n(?!\\s*\\()\n(?=\n(?:[A-Za-z_][A-Za-z0-9_]*+|::)++\\s*\\{  # actual name\n|\n(?:(?<=operator)(?:[-*&<>=+!]+|\\{\\}|\\[\\]))\\s*\\}\n)",
+			"end": "(?<=\\})(?!\\w)",
+			"name": "support.function.pahlm",
+			"patterns": [
+			]
+		},
+		"headings":{
+			"name": "markup.heading.pahlm",
+			"match": "^(#){1,7}\\s(.*)",
+			"patterns": [{
+				"include": "#math"
+			}]
 		}
 	},
 	"scopeName": "text.html.pahlm"
