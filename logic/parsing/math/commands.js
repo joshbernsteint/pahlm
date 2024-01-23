@@ -1,10 +1,14 @@
-const {parseFile} = require('../parser.js');
+function parseText(str, flags){
+    str = str.trim();
+    return str;
+}
+
 /**
  * Treats whatever is inputted as basic text
  * @param {string} input 
  */
 function text(flags, args){
-    return getBracketArgs((g1) => `<mi>${parseFile(g1, false, flags)}</mi>`, args);
+    return getBracketArgs((g1) => `<mi>${parseText(g1, flags)}</mi>`, args);
 }
 
 

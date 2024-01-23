@@ -9,8 +9,7 @@
     "vscode": "^1.85.0"
   },
   "categories": [
-    "Programming Languages",
-    "Themes"
+    "Programming Languages"
   ],
   "contributes": {
     "languages": [{
@@ -30,9 +29,17 @@
     }],
     "commands": [
       {
-        "command": "pahlm.run",
-        "title": "Hello World"
+        "command": "pahlm.compile",
+        "title": "Compile"
       }
-    ]
+    ],
+    "menus": {
+      "explorer/context": [
+        {
+          "command": "pahlm.compile",
+          "group": "navigation"
+        }
+      ]
+    }
   }
 }
