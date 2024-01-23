@@ -22,5 +22,4 @@ function greekParser(){
     }
     return result;
 }
-
-export default greekParser;
+module.exports = greekParser;

@@ -1,7 +1,5 @@
-import { basicRegexes, escapeRegexes, listRegexes } from "./regexes.js";
-import {Stack, Queue, createPattern, findOffset} from "../utils/index.js";
-
-
+const {basicRegexes, escapeRegexes, listRegexes} = require("./regexes.js");
+const {Stack, Queue, createPattern, findOffset} = require("../utils/index.js");
 
 
 function parseFile(str, trimInput=true, flags={
@@ -99,4 +97,4 @@ function parseFile(str, trimInput=true, flags={
     return queue.string;
 }
 
-export default parseFile;
+module.exports = {parseFile: parseFile};

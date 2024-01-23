@@ -38,8 +38,8 @@ function matchCurlyBraces(depth=3){
 }
 
 
-export{
-    toRomanNumeral,
-    toLetters,
-    matchCurlyBraces,
+module.exports = {
+    toRomanNumeral: toRomanNumeral,
+    toLetters: toLetters,
+    matchCurlyBraces: matchCurlyBraces,
 }

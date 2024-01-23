@@ -1,5 +1,5 @@
-import commands from "./general/commands.js";
-import mathParser from "./math/math.js";
+const commands = require('./general/commands.js');
+const {mathParser} = require('./math/mathParser.js');
 
 const basicRegexes = [
     {pattern: '\\\\setBracketDepth#!', run: commands.setBracketDepth},
@@ -137,9 +137,9 @@ const escapeRegexes = {
     ']': { pattern: /(\\\])/g, replace: '&rsqb;' }
   };
 
-export{
-    basicRegexes,
-    listRegexes,
-    escapeRegexes,
-    commandRegexes,
+module.exports = {
+    basicRegexes: basicRegexes,
+    listRegexes: listRegexes,
+    escapeRegexes: escapeRegexes,
+    commandRegexes: commandRegexes,
 }

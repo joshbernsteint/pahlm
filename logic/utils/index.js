@@ -1,6 +1,5 @@
-import Stack from "./Stack.js";
-import Queue from "./Queue.js";
-
+const Stack = require('./Stack.js');
+const Queue = require('./Queue.js');
 
 const preventBrackets = /(?<!\{[^]*)#1#N(?<!\s*\})#2/gm;
 
@@ -53,10 +52,10 @@ function replaceAt(str, index, endIndex, replacement){
     return str.substring(0, index) + replacement + str.substring(endIndex);
 }
 
-export{
-    Stack,
-    Queue,
-    createPattern,
-    findOffset,
-    replaceAt
+module.exports = {
+    Stack:Stack,
+    Queue: Queue,
+    createPattern: createPattern,
+    findOffset: findOffset,
+    replaceAt: replaceAt
 }

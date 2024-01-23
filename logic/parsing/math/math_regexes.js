@@ -1,5 +1,11 @@
-import defaultCommands from './commands.js';
-import  mathParser  from './math.js';
+
+
+const defaultCommands = require("./commands.js");
+// const mathParser = require("./mathParser.js");
+
+function mathParser(s){
+    return s;
+}
 
 const mathIdentifiers = [
     /**     Operators           */
@@ -146,7 +152,8 @@ const mathMacros = [
 ];
 
 
-export{
-    mathMacros,
-    mathIdentifiers,
+
+module.exports = {
+    mathMacros: mathMacros,
+    mathIdentifiers: mathIdentifiers
 };

@@ -1,7 +1,5 @@
-import { Queue, createPattern, findOffset, replaceAt } from "../../utils/index.js";
-import { mathMacros,mathIdentifiers } from "./math_regexes.js";
-
-
+const {Queue, createPattern, findOffset, replaceAt} = require("../../utils/index.js");
+const {mathMacros, mathIdentifiers} = require("./math_regexes.js");
 
 
 function mathParser(string, flags){
@@ -85,4 +83,7 @@ function mathParser(string, flags){
     return `<mrow>${mathQueue.string}</mrow>`;
 }
 
-export default mathParser;
+
+module.exports = {
+    mathParser: mathParser
+};

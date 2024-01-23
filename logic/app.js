@@ -1,5 +1,5 @@
-import fs from 'fs';
-import parseFile from './parsing/parser.js';
+const fs = require('fs');
+const {parseFile} = require('./parsing/parser.js');
 // import { encode } from 'html-entities';
 
 async function sleep(seconds){
@@ -9,18 +9,22 @@ async function sleep(seconds){
 }
 
 
-const filePath = "input.plm";
-let fileSize = 0;
+async function run(){
+    const filePath = "input.plm";
+    let fileSize = 0;
 
 
-while(true){
-    const newSize = fs.statSync(filePath).size;
-    if(fileSize !== newSize){
-        fileSize = newSize;
-        const fileData = fs.readFileSync(filePath).toString().replaceAll("\r","");
-        fs.writeFileSync("out.html",parseFile(fileData));
+    while(true){
+        const newSize = fs.statSync(filePath).size;
+        if(fileSize !== newSize){
+            fileSize = newSize;
+            const fileData = fs.readFileSync(filePath).toString().replaceAll("\r","");
+            fs.writeFileSync("out.html",parseFile(fileData));
+        }
+        await sleep(5);
     }
-    await sleep(5);
 }
+
+run();
 
 // console.log(encode('=', {mode: 'extensive'}));

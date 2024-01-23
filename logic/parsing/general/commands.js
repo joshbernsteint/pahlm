@@ -1,4 +1,5 @@
-import { matchCurlyBraces } from "../../utils/counting.js";
+const {matchCurlyBraces} = require('../../utils/counting.js');
+
 function setBracketDepth(flags, full, val){
     const toNum = Number(val);
     if(isNaN(toNum)) return "";
@@ -10,6 +11,6 @@ function setBracketDepth(flags, full, val){
 
 
 
-export default {
+module.exports =  {
     setBracketDepth: setBracketDepth,
 }

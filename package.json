@@ -3,6 +3,8 @@
   "displayName": "pahlm",
   "description": "A note-taking languaging combining the ease of use of markdown with the math capabilities of LaTeX.",
   "version": "0.0.1",
+  "type": "commonjs",
+  "main": "./extension.js",
   "engines": {
     "vscode": "^1.85.0"
   },
@@ -25,6 +27,12 @@
       "language": "pahlm",
       "scopeName": "text.html.pahlm",
       "path": "./syntaxes/pahlm.tmLanguage.json"
-    }]
+    }],
+    "commands": [
+      {
+        "command": "pahlm.run",
+        "title": "Hello World"
+      }
+    ]
   }
 }

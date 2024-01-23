@@ -1,4 +1,4 @@
-import parseFile from "../parser.js"
+const {parseFile} = require('../parser.js');
 /**
  * Treats whatever is inputted as basic text
  * @param {string} input 
@@ -29,7 +29,7 @@ function getBracketArgs(fun, args){
     
 }
 
-export default {
+module.exports = {
     text: text,
     getBracketArgs: getBracketArgs,
 }
