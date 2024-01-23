@@ -12,34 +12,47 @@
     "Programming Languages"
   ],
   "contributes": {
-    "languages": [{
-      "id": "pahlm",
-      "aliases": ["PaHLM", "pahlm"],
-      "extensions": [".plm"],
-      "configuration": "./language-configuration.json",
-      "icon": {
-        "light": "./themes/file_icon.png",
-        "dark": "./themes/file_icon.png"
+    "languages": [
+      {
+        "id": "pahlm",
+        "aliases": [
+          "PaHLM",
+          "pahlm"
+        ],
+        "extensions": [
+          ".plm"
+        ],
+        "configuration": "./language-configuration.json",
+        "icon": {
+          "light": "./themes/file_icon.png",
+          "dark": "./themes/file_icon.png"
+        }
       }
-    }],
-    "grammars": [{
-      "language": "pahlm",
-      "scopeName": "text.html.pahlm",
-      "path": "./syntaxes/pahlm.tmLanguage.json"
-    }],
+    ],
+    "grammars": [
+      {
+        "language": "pahlm",
+        "scopeName": "text.html.pahlm",
+        "path": "./syntaxes/pahlm.tmLanguage.json"
+      }
+    ],
     "commands": [
       {
-        "command": "pahlm.compile",
+        "command": "pahlm.api.compile",
         "title": "Compile"
       }
     ],
     "menus": {
       "explorer/context": [
         {
-          "command": "pahlm.compile",
+          "command": "pahlm.api.compile",
           "group": "navigation"
         }
       ]
     }
+  },
+  "dependencies": {
+    "html-entities": "^2.4.0",
+    "print-html-to-pdf": "^1.0.8"
   }
 }
