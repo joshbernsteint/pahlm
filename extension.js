@@ -3,6 +3,8 @@
 const vscode = require('vscode');
 const fs = require('fs');
 const {parseFile} = require('./logic/parsing/parser.js');	
+const convertHTMLToPDF = require("pdf-puppeteer");
+
 
 
 // This method is called when your extension is activated
@@ -21,7 +23,15 @@ function activate(context) {
 		// The code you place here will be executed every time your command is executed
 		const t = editor.document.getText().replaceAll("\r","");
 		const parsed = parseFile(t);
-		vscode.window.showInformationMessage(`paHLM compiled to PDF`);
+
+		let options = { format: 'A4' };
+		// Example of options with args //
+		// let options = { format: 'A4', args: ['--no-sandbox', '--disable-setuid-sandbox'] };
+
+		convertHTMLToPDF(parsed, (data) => {
+			fs.writeFileSync("C:/Users/mrcla/Desktop/Coding/test.pdf", data);
+			vscode.window.showInformationMessage(`paHLM compiled to PDF`);
+		})
 	});
 
 	context.subscriptions.push(disposable);

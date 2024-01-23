@@ -36,7 +36,6 @@ const basicRegexes = [
         pattern: "\\\\table#@", preventRecursive: true, giveFlags: true,
         name: "\\\\table",
         run: (flags, s, g1) => {
-            console.log(g1);
             return g1;
         },
     },
