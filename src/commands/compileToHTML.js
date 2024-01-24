@@ -42,7 +42,7 @@ async function CompileToHTML(textEditor, edit, ...args){
 }
 
 module.exports = {
-    id: 'pahlm.compile.HTML',
+    id: 'pahlm.compile.html',
     type: 'editor',
     run: CompileToHTML
 };

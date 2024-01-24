@@ -48,18 +48,32 @@
       {
         "command": "pahlm.compile.auto.html",
         "title": "Enable Auto Compile to HTML"
+      },
+      {
+        "command": "pahlm.compile.auto.pdf",
+        "title": "Enable Auto Compile to PDF"
       }
     ],
     "menus": {
       "explorer/context": [
         {
           "command": "pahlm.compile.html",
-          "group": "navigation",
+          "group": "0_pahlm",
           "when": "resourceLangId == pahlm"
         },
         {
           "command": "pahlm.compile.pdf",
-          "group": "navigation",
+          "group": "0_pahlm",
+          "when": "resourceLangId == pahlm"
+        },
+        {
+          "command": "pahlm.compile.auto.html",
+          "group": "0_pahlm",
+          "when": "resourceLangId == pahlm"
+        },
+        {
+          "command": "pahlm.compile.auto.pdf",
+          "group": "0_pahlm",
           "when": "resourceLangId == pahlm"
         }
       ]
@@ -76,8 +90,33 @@
         "key": "ctrl+alt+h",
         "mac": "cmd+alt+h",
         "when": "resourceLangId == pahlm"
+      },
+      {
+        "command": "pahlm.compile.auto.html",
+        "key": "shift+alt+h",
+        "mac": "shift+alt+h",
+        "when": "resourceLangId == pahlm"
+      },
+      {
+        "command": "pahlm.compile.auto.pdf",
+        "key": "shift+alt+p",
+        "mac": "shift+alt+p",
+        "when": "resourceLangId == pahlm"
       }
-    ]
+    ],
+    "configuration": {
+      "type": "object",
+      "title": "PaHLM",
+      "order": 20,
+      "properties": {
+        "pahlm.compile.interval":{
+          "type": "number",
+          "default": 2,
+          "scope": "resource",
+          "description": "How often the auto compiler should check for changes (In seconds)"
+        }
+      }
+    }
   },
   "dependencies": {
     "html-entities": "^2.4.0",

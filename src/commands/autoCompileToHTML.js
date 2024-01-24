@@ -2,6 +2,7 @@ const path = require('path');
 const vscode = require('vscode');
 const fs = require('fs');
 const toHTML = require('./compileToHTML.js');
+const defaultConfig = require('../defaultConfig');
 
 /**
  * @param {vscode.TextEditor} textEditor 
@@ -30,7 +31,7 @@ async function autoCompileToHTML(textEditor, edit, ...args){
                         toHTML.run(textEditor, edit, 'noOutput', ...args);
                     }
                 }
-            }, 2000);
+            }, vscode.workspace.getConfiguration().get('pahlm.compile.interval', defaultConfig.autoCompileInterval) * 1000);
         })
 
         return task;

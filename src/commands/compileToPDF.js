@@ -22,30 +22,42 @@ async function CompileToPDF(textEditor, edit, ...args){
     options.addArguments('--headless');
     const driver = new Builder().forBrowser('firefox').setFirefoxOptions(options).build();
 
-    await vscode.window.withProgress({
-        location: vscode.ProgressLocation.Notification,
-        title: "Compiling to PDF...",
-        cancellable: true
-    }, () => {
-        const task = new Promise((res, rej) => {
-            try {
-                fs.writeFileSync(filePath, html);
-                driver.get('file://' + filePath).then(() => (driver.printPage()).then((s) => {
-                    buffer = s;
-                    res();
-                }));
-            } catch (error) {
-                vscode.window.showErrorMessage('File could not be compiled');
-                rej();
-            }
+    if(args.includes('noOutput')){
+        try {
+            fs.writeFileSync(filePath, html);
+            await driver.get('file://' + filePath);
+            buffer = await driver.printPage();
+            fs.writeFileSync(path.join(dirPath, basename+'.pdf'), buffer, 'base64');
+        } catch (error) {
+        }
+    }
+    else{
+        await vscode.window.withProgress({
+            location: vscode.ProgressLocation.Notification,
+            title: "Compiling to PDF...",
+            cancellable: true
+        }, () => {
+            const task = new Promise((res, rej) => {
+                try {
+                    fs.writeFileSync(filePath, html);
+                    driver.get('file://' + filePath).then(() => (driver.printPage()).then((s) => {
+                        buffer = s;
+                        res();
+                    }));
+                } catch (error) {
+                    vscode.window.showErrorMessage('File could not be compiled');
+                    rej();
+                }
+            });
+    
+            return task;
         });
+        if(buffer)
+            fs.writeFileSync(path.join(dirPath, basename+'.pdf'), buffer, 'base64');
+    }
+    
 
-        return task;
-    });
-
-    if(buffer)
-        fs.writeFileSync(path.join(dirPath, basename+'.pdf'), buffer, 'base64');
-    fs.rmSync(filePath);
+    fs.rmSync(filePath); //Remove the temp file
     await driver.quit();
 }
 
