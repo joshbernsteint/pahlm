@@ -4,7 +4,7 @@
   "description": "A note-taking languaging combining the ease of use of markdown with the math capabilities of LaTeX.",
   "version": "0.0.1",
   "type": "commonjs",
-  "main": "./extension.js",
+  "main": "./src/extension.js",
   "engines": {
     "vscode": "^1.85.0"
   },
@@ -22,10 +22,10 @@
         "extensions": [
           ".plm"
         ],
-        "configuration": "./language-configuration.json",
+        "configuration": "./config/language-configuration.json",
         "icon": {
-          "light": "./themes/file_icon.png",
-          "dark": "./themes/file_icon.png"
+          "light": "./config/file_icon.png",
+          "dark": "./config/file_icon.png"
         }
       }
     ],
@@ -33,26 +33,55 @@
       {
         "language": "pahlm",
         "scopeName": "text.html.pahlm",
-        "path": "./syntaxes/pahlm.tmLanguage.json"
+        "path": "./config/pahlm.tmLanguage.json"
       }
     ],
     "commands": [
       {
-        "command": "pahlm.api.compile",
-        "title": "Compile"
+        "command": "pahlm.compile.html",
+        "title": "Compile to HTML"
+      },
+      {
+        "command": "pahlm.compile.pdf",
+        "title": "Compile to PDF"
+      },
+      {
+        "command": "pahlm.compile.auto.html",
+        "title": "Enable Auto Compile to HTML"
       }
     ],
     "menus": {
       "explorer/context": [
         {
-          "command": "pahlm.api.compile",
-          "group": "navigation"
+          "command": "pahlm.compile.html",
+          "group": "navigation",
+          "when": "resourceLangId == pahlm"
+        },
+        {
+          "command": "pahlm.compile.pdf",
+          "group": "navigation",
+          "when": "resourceLangId == pahlm"
         }
       ]
-    }
+    },
+    "keybindings": [
+      {
+        "command": "pahlm.compile.pdf",
+        "key": "ctrl+alt+p",
+        "mac": "cmd+alt+p",
+        "when": "resourceLangId == pahlm"
+      },
+      {
+        "command": "pahlm.compile.html",
+        "key": "ctrl+alt+h",
+        "mac": "cmd+alt+h",
+        "when": "resourceLangId == pahlm"
+      }
+    ]
   },
   "dependencies": {
     "html-entities": "^2.4.0",
-    "pdf-puppeteer": "^1.1.11"
+    "pdf-puppeteer": "^1.1.11",
+    "selenium-webdriver": "^4.17.0"
   }
 }

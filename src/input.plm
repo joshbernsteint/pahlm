@@ -9,8 +9,15 @@ $e^\sqrt{x}$
 
 $\not 5x$
 
-\int{2}{5}\frac{\text{sin}(\sqrt{x} + a) e^\sqrt{x} }{\sqrt{x}}dx
+$\int{2}{5}\frac{\text{sin}(\sqrt{x} + a) e^\sqrt{x} }{\sqrt{x}}dx$
+
+
 /[\int{2}{5}\frac{\text{sin}(\sqrt{x} + a) e^\sqrt{x} }{\sqrt{x}}dx]/
+
+
+
 <!-- Hello -->
+
+**Bold text here**
 
 # Testing testing
