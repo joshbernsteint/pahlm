@@ -6,7 +6,14 @@
 			"include": "#comment"
 		},
 		{
-			"include": "#commands2"
+			"include": "#bold"
+		},
+		{"include": "#italic"},
+		{
+			"include": "#commands"
+		},
+		{
+			"include": "#escape"
 		},
 		{
 			"include": "#math"
@@ -16,6 +23,11 @@
 		}
 	],
 	"repository": {
+		"escape": {
+			"name": "constant.character.escape.string.pahlm",
+			"match": "\\\\.(?=\\s|\\\\|$)",
+			"patterns": [{"include": "#commands"}]
+		},
 		"comment": {
 			"name": "comment.block.pahlm",
 			"begin": "<!--",
@@ -64,15 +76,19 @@
 				}
 			]
 		},
-		"commands": {
-			"name": "support.function.pahlm",
-			"match": "\\\\[^\\s\\\\\\W]*"
-		},
-		"commands2":{
-			"begin": "\\\\(?x)\n(?!\\s*\\()\n(?=\n(?:[A-Za-z_][A-Za-z0-9_]*+|::)++\\s*\\{  # actual name\n|\n(?:(?<=operator)(?:[-*&<>=+!]+|\\{\\}|\\[\\]))\\s*\\}\n)",
-			"end": "(?<=\\})(?!\\w)",
-			"name": "support.function.pahlm",
-			"patterns": [
+		"commands":{
+			"patterns":[
+				{
+					"begin": "\\\\(?x)\n(?!\\s*\\()\n(?=\n(?:[A-Za-z_][A-Za-z0-9_]*+|::)++\\s*\\{  # actual name\n|\n(?:(?<=operator)(?:[-*&<>=+!]+|\\{\\}|\\[\\]))\\s*\\}\n)",
+					"end": "(?<=\\})(?!\\w)",
+					"name": "support.function.commang.args.pahlm",
+					"patterns": [
+					]
+				},
+				{
+					"name": "support.function.command.pahlm",
+					"match": "\\\\[^\\\\\\s]{2,}(?=\\s|\\\\|$)"
+				}
 			]
 		},
 		"headings":{
@@ -81,6 +97,20 @@
 			"patterns": [{
 				"include": "#math"
 			}]
+		},
+		"bold": {
+			"name": "markup.bold.pahlm",
+			"match": "\\*\\*([^\\*]*)\\*\\*",
+			"patterns": [
+				{"include": "#math"}, {"include": "#italic"}, {"include": "#italic"}
+			]
+		},
+		"italic": {
+			"name": "markup.italic.pahlm",
+			"match": "\\*([^\\*]*)\\*",
+			"patterns": [
+				{"include": "#math"}, {"include": "#bold"}, {"include": "#italic"}
+			]
 		}
 	},
 	"scopeName": "text.html.pahlm"

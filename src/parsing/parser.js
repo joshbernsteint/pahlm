@@ -22,7 +22,7 @@ function parseFile(str, trimInput=true, flags={
     //Replace all escape characters
     for (let i = 0; i < customKeys.length; i++) {
         const body = escapeRegexes[customKeys[i]];
-        str = str.replaceAll(body.pattern, body.replace + " ");
+        str = str.replaceAll(body.pattern, body.replace);
     }
 
 
