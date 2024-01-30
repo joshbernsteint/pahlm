@@ -161,6 +161,7 @@ function mathParser(string, flags){
         mathQueue.match(fullPattern[0]).forEach(match => {
             const offset = match.index;
             match = match.filter(el => el != undefined);
+            console.log(match);
             mathQueue.addToQueue({
                 match: match[0],
                 preventRecursive: true,
@@ -207,6 +208,8 @@ function mathParser(string, flags){
     })
 
     // console.log(mathQueue);
+
+    console.log(mathQueue);
 
     // Apply the queue
     mathQueue.applyQueue((str, q) => {

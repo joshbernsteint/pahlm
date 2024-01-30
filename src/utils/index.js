@@ -36,6 +36,38 @@ function createPattern(pattern, argument, flags, varOffset=false, name=/[]/){
     }
 }
 
+function parseOrientation(orientation){
+    const validAlignments = /l|L|r|R|c|C/;
+    const alignMap = {"l": "left", "r": "right", "c": "center"};
+    const result = {
+        numCols: 0,
+        numBorders: 0,
+        order: [],
+    }
+    orientation.split('').forEach(char => {
+        if(char !== "|"){
+            if(!validAlignments.test(char)){
+                throw 'Invalid alignment value';
+            }
+            else{
+                result.numCols++;
+                result.order.push({
+                    isBorder: false,
+                    align: alignMap[char.toLowerCase()],
+                });
+            }
+        }
+        else{
+            result.numBorders++;
+            result.order.push({
+                isBorder: true
+            });
+        }
+    });
+
+    return result;
+}
+
 function findOffset(...args){
     let index;
     args.every(el => {
@@ -57,5 +89,6 @@ module.exports = {
     Queue: Queue,
     createPattern: createPattern,
     findOffset: findOffset,
-    replaceAt: replaceAt
+    replaceAt: replaceAt,
+    parseOrientation
 }

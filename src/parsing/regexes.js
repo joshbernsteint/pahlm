@@ -1,4 +1,5 @@
 const commands = require('./general/commands.js');
+const { makeTable } = require('./math/commands.js');
 const {mathParser} = require('./math/mathParser.js');
 
 const basicRegexes = [
@@ -32,11 +33,12 @@ const basicRegexes = [
         preventRecursive: true,
         run: (s,g1, g2) => `<pre><code>${g2}</code></pre>`,
     },
+    //Table
     {
-        pattern: "\\\\table#@", preventRecursive: true, giveFlags: true,
+        pattern: "\\\\table#@#@", preventRecursive: true, giveFlags: true,
         name: "\\\\table",
-        run: (flags, s, g1) => {
-            return g1;
+        run: (flags, s, ...groups) => {
+            return makeTable(flags, groups[0], groups[flags.maxBracesSize]);
         },
     },
     // code

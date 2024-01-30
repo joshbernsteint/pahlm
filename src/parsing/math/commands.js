@@ -1,3 +1,5 @@
+const { parseOrientation } = require("../../utils");
+
 function parseText(str, flags){
     str = str.trim();
     return str;
@@ -9,6 +11,11 @@ function parseText(str, flags){
  */
 function text(flags, args){
     return getBracketArgs((g1) => `<mi>${parseText(g1, flags)}</mi>`, args);
+}
+
+function makeTable(flags, orientation, data){
+    const tableData = parseOrientation(orientation);
+    console.log(tableData);
 }
 
 
@@ -34,6 +41,7 @@ function getBracketArgs(fun, args){
 }
 
 module.exports = {
-    text: text,
-    getBracketArgs: getBracketArgs,
+    text,
+    getBracketArgs,
+    makeTable,
 }

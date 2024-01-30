@@ -4,7 +4,7 @@ const {Stack, Queue, createPattern, findOffset} = require("../utils/index.js");
 
 function parseFile(str, trimInput=true, flags={
     maxBracesDepth: /{([^}{]*(?:{([^}{]*(?:{([^}{]*(?:{[^}{]*}[^}{]*)*)}[^}{]*)*)}[^}{]*)*)}/,
-
+    maxBracesSize: 3,
 }){
 
 
