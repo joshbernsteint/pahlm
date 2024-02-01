@@ -16,6 +16,7 @@ function text(flags, args){
 function makeTable(flags, orientation, data){
     const tableData = parseOrientation(orientation);
     console.log(tableData);
+    return data;
 }
 
 

@@ -3,81 +3,56 @@ const { makeTable } = require('./math/commands.js');
 const {mathParser} = require('./math/mathParser.js');
 
 const basicRegexes = [
-    {pattern: '\\\\setBracketDepth#!', run: commands.setBracketDepth},
-    //comment 
-    {
-        pattern: /<!--[^]+-->/gm,
-        preventRecursive: true,
-        run: (s) => s,
-    },
     // math
     {
-        pattern: '\\$#!\\$',
-        customArgument: /(.*?)/,
-        preventRecursive: true,
+        pattern: /\$(.*?)\$/gm,
         giveFlags: true,
-        run: (flags,s,g1) => `<math>${mathParser(g1, flags)}<math>`
+        run: (flags,s,g1) => `<math>${mathParser(g1, flags)}</math>`
     },
     // block math
     {
-        pattern: "\/\\[#!\]\\/",
-        customArgument: /(.*?)/,
-        preventRecursive: true,
-        giveFlags: true,
+        pattern: /\/\[(.*?)\]\//gm,
         run: (flags, s, g1) => `<br><math display="block">${mathParser(g1, flags)}</math><br>`,
     },
     // blockcode
     {
-        pattern: "```#!#!```",
-        customArgument: [/(\{.+?\}|)/,/([^]*?)/],
-        preventRecursive: true,
-        run: (s,g1, g2) => `<pre><code>${g2}</code></pre>`,
+        pattern: /```(\{.+?\}|)([^]*?)```/gm,
+        run: (s, g1, g2) => `<pre><code>${g2}</code></pre>`,
     },
     //Table
     {
-        pattern: "\\\\table#@#@", preventRecursive: true, giveFlags: true,
-        name: "\\\\table",
-        run: (flags, s, ...groups) => {
-            return makeTable(flags, groups[0], groups[flags.maxBracesSize]);
+        balanced: true,
+        pattern: [/\\table/gm, {left: "{", right: "}"}, {left: "{", right: "}"}],
+        run: (flags, s, g1, g2, ...args) => {
+            return makeTable(flags, g1, g2);
         },
     },
     // code
     {
-        pattern: "\\`#!\\`",
-        customArgument: /([^`]+?)/,
-        preventRecursive: true,
+        pattern: /\`([^`]+?)\`/gm,
         run: (s, g1) => `<code>${g1}</code>`,
     },
     // bold
     {
-        pattern: "\\*\\*#!\\*\\*" ,
-        customArgument: /([^(\\*)]*)/,
+        pattern: /\*\*([^(\*)]*)\*\*/gm ,
         run: (s,g1) => `<b>${g1}</b>`,
     },
     // italic
     {
-        pattern: "\\*#!\\*",
-        customArgument: /([^(\*)]*)/,
+        pattern: /\*([^(\*)]*)\*/gm,
         run: (s,g1) => `<i>${g1}</i>`,
     },
     // br
-    {
-        pattern: "(\\s\\s\\s+)#!|^$",
-        customArgument: /$/,
-        run: () => "<br>",
-    },
+    { pattern: /(\\s\\s\\s+)$|^$/gm, run: () => "<br>",},
     // Dash
-    {
-        pattern: /---/gm,
-        run: () => "&#8212;",
-    },
-    { pattern: '#######\\s#!', customArgument: /(.*)/, run: (s,g1) => `<h7>${g1}</h7>`, name: /#######\s/g},
-    { pattern: '######\\s#!', customArgument: /(.*)/, run: (s,g1) => `<h6>${g1}</h6>`, name: /######\s/g },
-    { pattern: '#####\\s#!', customArgument: /(.*)/, run: (s,g1) => `<h5>${g1}</h5>`, name: /#####\s/g },
-    { pattern: '####\\s#!', customArgument: /(.*)/, run: (s,g1) => `<h4>${g1}</h4>`, name: /####\s/g },
-    { pattern: '###\\s#!', customArgument: /(.*)/, run: (s,g1) => `<h3>${g1}</h3>`, name: /###\s/g },
-    { pattern: '##\\s#!', customArgument: /(.*)/, run: (s,g1) => `<h2>${g1}</h2><hr>`, name: /##\s/g},
-    { pattern: '#\\s#!', customArgument: /(.*)/, run: (s,g1) => `<h1>${g1}</h1><hr>`, name: /#\s/g},
+    { pattern: /---/gm, run: () => "&#8212;",},
+    { pattern: /#######\\s(.*)/gm, run: (s,g1) => `<h7>${g1}</h7>`},
+    { pattern: /######\\s(.*)/gm, run: (s,g1) => `<h6>${g1}</h6>`},
+    { pattern: /#####\\s(.*)/gm, run: (s,g1) => `<h5>${g1}</h5>`},
+    { pattern: /####\\s(.*)/gm, run: (s,g1) => `<h4>${g1}</h4>`},
+    { pattern: /###\\s(.*)/gm, run: (s,g1) => `<h3>${g1}</h3>`},
+    { pattern: /##\\s(.*)/gm, run: (s,g1) => `<h2>${g1}</h2>`},
+    { pattern: /#\\s(.*)/gm, run: (s,g1) => `<h1>${g1}</h1>`},
 ];
 
 /**
@@ -119,28 +94,13 @@ const listRegexes = {
 
 
 const commandRegexes = [
-    {pattern: '\\\\setBracketDepth', arguments: 1, offsetIndex: 2, run: commands.setBracketDepth}
+    
 ];
 
 
 
-const escapeRegexes = {
-    '$': { pattern: /(\\\$)/g, replace: '&dollar;' },
-    '&': { pattern: /(\\\&)/g, replace: '&amp;' },
-    '^': { pattern: /(\\\^)/g, replace: '&Hat;' },
-    '_': { pattern: /(\\\_)/g, replace: '&lowbar;' },
-    '{': { pattern: /(\\\{)/g, replace: '&lcub;' },
-    '}': { pattern: /(\\\})/g, replace: '&rcub;' },
-    '*': { pattern: /(\\\*)/g, replace: '&midast;' },
-    '%': { pattern: /(\\\%)/g, replace: '&percnt;' },
-    '\\': { pattern: /(\\\\)/g, replace: '&bsol;' },
-    '[': { pattern: /(\\\[)/g, replace: '&lsqb;' },
-    ']': { pattern: /(\\\])/g, replace: '&rsqb;' }
-  };
-
 module.exports = {
     basicRegexes: basicRegexes,
     listRegexes: listRegexes,
-    escapeRegexes: escapeRegexes,
     commandRegexes: commandRegexes,
 }

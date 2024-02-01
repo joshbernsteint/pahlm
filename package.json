@@ -4,6 +4,9 @@
   "description": "A note-taking languaging combining the ease of use of markdown with the math capabilities of LaTeX.",
   "version": "0.0.1",
   "type": "commonjs",
+  "scripts": {
+    "test-run": "node src/parsing/test.js"
+  },
   "main": "./src/extension.js",
   "engines": {
     "vscode": "^1.85.0"
@@ -109,7 +112,7 @@
       "title": "PaHLM",
       "order": 20,
       "properties": {
-        "pahlm.compile.interval":{
+        "pahlm.compile.interval": {
           "type": "number",
           "default": 2,
           "scope": "resource",
@@ -121,6 +124,7 @@
   "dependencies": {
     "html-entities": "^2.4.0",
     "pdf-puppeteer": "^1.1.11",
-    "selenium-webdriver": "^4.17.0"
+    "selenium-webdriver": "^4.17.0",
+    "xregexp": "^5.1.1"
   }
 }

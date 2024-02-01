@@ -1,5 +1,7 @@
 const {Queue, createPattern, findOffset, replaceAt} = require("../../utils/index.js");
 // const {mathMacros, mathIdentifiers} = require("./math_regexes.js");
+const {replaceAllRecursive} = require('../../utils/myRegExp.js');
+
 
 const defaultCommands = require("./commands.js");
 
@@ -95,140 +97,91 @@ const mathIdentifiers = [
  * Contains simple math macros
  */
 const mathMacros = [
+    //Superscript
     {
-        pattern: "(#@|#!)\\^(#@|#!)",
-        customArgument: [undefined, /[^\s]+/,undefined,/[^\s]*[^\{]/],
-        variableOffset: true,
-        giveFlags: true,
-        name: "\\^",
-        run: (flags, s, ...args) => {
-            args = args.filter(el => el != undefined);
-            args.splice(-2)
-            args = args.slice(0,4);
-            let base;
-            let sub;
-  
-            for (let i = 0; i < args.length; i++) {
-                const element = args[i];
-                if(element[0] === "{") continue;
-                else if(base) sub = element;
-                else base = element;
-            }
-            return `<msup>${mathParser(base, flags)}${mathParser(sub, flags)}</msup>`;
-        }
+        grouped: [
+            //Both brackets
+            {
+                balanced: true,
+                pattern: [["{","}"], /\^/gm, ["{","}"]],
+                run: (flags, s, g1, g2) => {
+                    return `<msup>${mathParser(g1, flags)}${mathParser(g2, flags)}</msup>`
+                }
+            },
+            // //Left brackets only
+            {
+                balanced: true,
+                pattern: [["{","}"], /\^([^\n\^]*)/gm],
+                run: (flags, s, g1, g2) => {
+                    return `<msup>${mathParser(g1, flags)}${mathParser(g2, flags)}</msup>`
+                }
+            },
+            //Right brackets only
+            {
+                balanced: true,
+                pattern: [/([^\n\^]*)\^/gm, ["{","}"]],
+                run: (flags, s, g1, g2) => {
+                    return `<msup>${mathParser(g1, flags)}${mathParser(g2, flags)}</msup>`
+                }
+            },
+            //Version with no brackets
+            {
+                pattern: /([^\n\^]*)\^([^\n\^]*)/gm,
+                run: (flags, s, g1, g2) => {console.log(g1,g2);return `<msup>${mathParser(g1, flags)}${mathParser(g2, flags)}</msup>`}
+            },
+        ]
     },
-    {
-        pattern: "(#@|#!)_(#@|#!)",
-        customArgument: [undefined, /[^\s]+/,undefined,/[^\s]*[^\{]/],
-        name: "_",
-        customOffset: true,
-        variableOffset: true,
-        giveFlags: true,
-        run: (flags, s, ...args) => {
-            args = args.filter(el => el != undefined);
-            args.splice(-2);
-            args = args.slice(0,4);
-            let base;
-            let sub;
-            for (let i = 0; i < args.length; i++) {
-                const element = args[i];
-                if(element[0] === "{") continue;
-                else if(base) sub = element;
-                else base = element;
-            }
-            return `<msub>${mathParser(base, flags)}${mathParser(sub, flags)}</msub>`;
-        },
-    },
-    { pattern: "\\\\text#@", giveFlags: true, run: (flags, s, ...args) => defaultCommands.text(flags, args), name: "\\\\text" },
-    { pattern: "\\\\sqrt#@", giveFlags: true, run: (flags, s, ...args) => defaultCommands.getBracketArgs(((g1) => `<msqrt>${mathParser(g1,flags)}</msqrt>`), args),  name: "\\\\sqrt"},
-    { pattern: "\\\\root#@#@", giveFlags: true, run: (flags, s, ...args) => defaultCommands.getBracketArgs(((g1, g2) => `<mroot>${mathParser(g1,flags)}${mathParser(g2,flags)}</mroot>`), args),  name: "\\\\root"},
-    { pattern: "\\\\frac#@#@", giveFlags: true, run: (flags, s, ...args) => defaultCommands.getBracketArgs(((g1, g2) => `<mfrac>${mathParser(g1,flags)}${mathParser(g2,flags)}</mfrac>`), args),  name: "\\\\frac"},
-    { pattern: "\\\\binom#@#@", giveFlags: true, run: (flags, s, ...args) => defaultCommands.getBracketArgs(((g1, g2) => `<mo>&lpar;</mo><mfrac linethickness="0">${mathParser(g1,flags)}${mathParser(g2,flags)}</mfrac><mo>&rpar;</mo>`), args),  name: "\\\\frac"},
-    { pattern: "\\\\int#@#@", giveFlags: true, run: (flags, s, ...args) => defaultCommands.getBracketArgs(((g1, g2) => `<msubsup><mo>&#x222B;</mo>${mathParser(g1,flags)}${mathParser(g2,flags)}</msubsup>`), args),  name: "\\\\int"},
+    //Subscript
+    // {
+    //     pattern: "(#@|#!)_(#@|#!)",
+    //     customArgument: [undefined, /[^\s]+/,undefined,/[^\s]*[^\{]/],
+    //     name: "_",
+    //     customOffset: true,
+    //     variableOffset: true,
+    //     giveFlags: true,
+    //     run: (flags, s, ...args) => {
+    //         args = args.filter(el => el != undefined);
+    //         args.splice(-2);
+    //         args = args.slice(0,4);
+    //         let base;
+    //         let sub;
+    //         for (let i = 0; i < args.length; i++) {
+    //             const element = args[i];
+    //             if(element[0] === "{") continue;
+    //             else if(base) sub = element;
+    //             else base = element;
+    //         }
+    //         return `<msub>${mathParser(base, flags)}${mathParser(sub, flags)}</msub>`;
+    //     },
+    // },
+    // { pattern: "\\\\text#@", giveFlags: true, run: (flags, s, ...args) => defaultCommands.text(flags, args), name: "\\\\text" },
+    // { pattern: "\\\\sqrt#@", giveFlags: true, run: (flags, s, ...args) => defaultCommands.getBracketArgs(((g1) => `<msqrt>${mathParser(g1,flags)}</msqrt>`), args),  name: "\\\\sqrt"},
+    // { pattern: "\\\\root#@#@", giveFlags: true, run: (flags, s, ...args) => defaultCommands.getBracketArgs(((g1, g2) => `<mroot>${mathParser(g1,flags)}${mathParser(g2,flags)}</mroot>`), args),  name: "\\\\root"},
+    // { pattern: "\\\\frac#@#@", giveFlags: true, run: (flags, s, ...args) => defaultCommands.getBracketArgs(((g1, g2) => `<mfrac>${mathParser(g1,flags)}${mathParser(g2,flags)}</mfrac>`), args),  name: "\\\\frac"},
+    // { pattern: "\\\\binom#@#@", giveFlags: true, run: (flags, s, ...args) => defaultCommands.getBracketArgs(((g1, g2) => `<mo>&lpar;</mo><mfrac linethickness="0">${mathParser(g1,flags)}${mathParser(g2,flags)}</mfrac><mo>&rpar;</mo>`), args),  name: "\\\\frac"},
+    // { pattern: "\\\\int#@#@", giveFlags: true, run: (flags, s, ...args) => defaultCommands.getBracketArgs(((g1, g2) => `<msubsup><mo>&#x222B;</mo>${mathParser(g1,flags)}${mathParser(g2,flags)}</msubsup>`), args),  name: "\\\\int"},
 ];
 
-function mathParser(string, flags){
-    if(!isNaN(Number(string))) return `<mn>${string}</mn>`;
-
-    // console.log('New!');
-
-    const mathQueue = new Queue(string);
-
-    // Math macros and commands
-    mathMacros.forEach(command => {
-        const fullPattern = createPattern(command.pattern, command.customArgument, flags, (command.variableOffset) ? true : false, command.name);
-        // console.log(fullPattern[0], command.pattern);
-        mathQueue.match(fullPattern[0]).forEach(match => {
-            const offset = match.index;
-            match = match.filter(el => el != undefined);
-            console.log(match);
-            mathQueue.addToQueue({
-                match: match[0],
-                preventRecursive: true,
-                giveFlags: true,
-                pattern: fullPattern[0],
-                offsetIndex: fullPattern[1],
-                run: command.run,
-            }, [offset, offset + match[0].length - 1]);
-            
-        });
-    });
-
-
-
-
-    mathIdentifiers.forEach(id => {
-        let lengthDif = 0;
-        const replaced = id.op ? `<mo>${id.replace}</mo>` : `<mi>${id.replace}</mi>`;
-        mathQueue.match(id.pattern).forEach(match => {
-            const lowerIndex = match.index + lengthDif;
-            const endIndex = match.index + match[0].length - 1 + lengthDif;
-            match = match.filter(el => el != undefined);
-            
-            mathQueue.addToQueue({
-                match: match[0],
-                preventRecursive: true,
-                pattern: id.pattern,
-                offsetIndex: undefined,
-                run: () => replaced,
-            }, [lowerIndex, endIndex]);
-
-        });
-    });
-
-
-    //Convert lone characters to mathIdentifiers and numbers
-    const loneNumAndIdentifier = /(?<!\\)\b[a-zA-Z0-9]+\b(?![^\<]*\>)/gm;
-    mathQueue.string = mathQueue.string.replaceAll(loneNumAndIdentifier, (s, index) => {
-        if(mathQueue.IsRangeAccessible(index, index + s.length - 1)){
-            s = s.replaceAll(/[0-9]+/g, (s2) => `<mn>${s2}</mn>`);
-            s = s.replaceAll(/[a-zA-Z](?![^\<]*\>)/g, s2 => `<mi>${s2}</mi>`);
-        }
-        return s;
-    })
-
-    // console.log(mathQueue);
-
-    console.log(mathQueue);
-
-    // Apply the queue
-    mathQueue.applyQueue((str, q) => {
-        q.forEach(el => {
-            str = str.replace(el.pattern, (...args) => {
-                args = args.filter(el => el != undefined)
-                const offset = (el.offsetIndex) ? args[el.offsetIndex] : findOffset(...args);
-                // console.log(args);
-                if(offset >= el.range[0])
-                    return ( el.giveFlags ? el.run(flags,...args) : el.run(...args));
+function mathParser(str, flags){
+    if(!isNaN(Number(str))){
+        return `<mn>${str}</mn>`;
+    }
+    mathMacros.forEach(macro => {
+        if(macro.grouped){
+            macro.grouped.forEach(group => {
+                if(group.balanced){
+                    // console.log(str);
+                    console.log(group);
+                    str = replaceAllRecursive(str,group.pattern, (...args) => group.run(flags, ...args));
+                }
                 else{
-                    // console.log(args, el.offsetIndex);
-                    return args[0];
+                    str = str.replaceAll(group.pattern, (...args) => group.run(flags, ...args));
                 }
             });
-        });
-        return str;
+        }
     });
-    return `<mrow>${mathQueue.string}</mrow>`;
+
+    return `<mrow>${str}</mrow>`;
 }
 
 
