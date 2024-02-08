@@ -1,5 +1,5 @@
 const commands = require('./general/commands.js');
-const { makeTable } = require('./math/commands.js');
+const { makeTable } = require('./general/commands.js');
 const {mathParser} = require('./math/mathParser.js');
 
 const basicRegexes = [
@@ -22,7 +22,7 @@ const basicRegexes = [
     //Table
     {
         balanced: true,
-        pattern: [/\\table/gm, {left: "{", right: "}"}, {left: "{", right: "}"}],
+        pattern: [/\\table/gm, ["{","}"],  ["{","}"]],
         run: (flags, s, g1, g2, ...args) => {
             return makeTable(flags, g1, g2);
         },

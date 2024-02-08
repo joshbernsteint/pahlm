@@ -13,11 +13,7 @@ function text(flags, args){
     return getBracketArgs((g1) => `<mi>${parseText(g1, flags)}</mi>`, args);
 }
 
-function makeTable(flags, orientation, data){
-    const tableData = parseOrientation(orientation);
-    console.log(tableData);
-    return data;
-}
+
 
 
 function getBracketArgs(fun, args){
@@ -38,11 +34,16 @@ function getBracketArgs(fun, args){
     res.unshift(last);
     const t = fun(...res);
     return t;
-    
+}
+
+function makeMatrix(flags, orientation, data){
+    const matrixOrientation = parseOrientation(orientation, {validEdges: {begin: ["{", '(', '['], end: ["}",')', "]"]}});
+    console.log(matrixOrientation);
+    return data;
 }
 
 module.exports = {
     text,
     getBracketArgs,
-    makeTable,
+    makeMatrix
 }

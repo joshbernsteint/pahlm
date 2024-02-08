@@ -1,4 +1,4 @@
-const {parseFile} = require("./parser.js");
+const {parseFile} = require("./new-parser.js");
 const fs = require('fs');
 
 async function sleep(time){
@@ -39,4 +39,5 @@ async function main(){
     }
 }
 
-main();
+
+main().catch(el => console.log(el));

@@ -1,5 +1,6 @@
-const {basicRegexes, escapeRegexes, listRegexes} = require("./regexes.js");
+const {basicRegexes, listRegexes} = require("./regexes.js");
 const {Stack, Queue, createPattern, findOffset} = require("../utils/index.js");
+const {encode} = require('html-entities');
 
 
 function parseFile(str, trimInput=true, flags={
@@ -14,7 +15,6 @@ function parseFile(str, trimInput=true, flags={
     // console.log(str);
 
     const listKeys = Object.keys(listRegexes);
-    const customKeys = Object.keys(escapeRegexes);
 
     // console.log(headingsRegexes);
 

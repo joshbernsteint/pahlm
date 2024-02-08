@@ -127,7 +127,7 @@ const mathMacros = [
             //Version with no brackets
             {
                 pattern: /([^\n\^]*)\^([^\n\^]*)/gm,
-                run: (flags, s, g1, g2) => {console.log(g1,g2);return `<msup>${mathParser(g1, flags)}${mathParser(g2, flags)}</msup>`}
+                run: (flags, s, g1, g2) => {return `<msup>${mathParser(g1, flags)}${mathParser(g2, flags)}</msup>`}
             },
         ]
     },
@@ -160,6 +160,14 @@ const mathMacros = [
     // { pattern: "\\\\frac#@#@", giveFlags: true, run: (flags, s, ...args) => defaultCommands.getBracketArgs(((g1, g2) => `<mfrac>${mathParser(g1,flags)}${mathParser(g2,flags)}</mfrac>`), args),  name: "\\\\frac"},
     // { pattern: "\\\\binom#@#@", giveFlags: true, run: (flags, s, ...args) => defaultCommands.getBracketArgs(((g1, g2) => `<mo>&lpar;</mo><mfrac linethickness="0">${mathParser(g1,flags)}${mathParser(g2,flags)}</mfrac><mo>&rpar;</mo>`), args),  name: "\\\\frac"},
     // { pattern: "\\\\int#@#@", giveFlags: true, run: (flags, s, ...args) => defaultCommands.getBracketArgs(((g1, g2) => `<msubsup><mo>&#x222B;</mo>${mathParser(g1,flags)}${mathParser(g2,flags)}</msubsup>`), args),  name: "\\\\int"},
+    // CMatrix
+    {
+        balanced: true,
+        pattern: [/\\cmatrix/gm, ["{","}"], ["{","}"]],
+        run: (flags, s, g1, g2, ...args) => {
+            return defaultCommands.makeMatrix(flags, g1, g2);
+        }
+    }
 ];
 
 function mathParser(str, flags){
@@ -170,14 +178,19 @@ function mathParser(str, flags){
         if(macro.grouped){
             macro.grouped.forEach(group => {
                 if(group.balanced){
-                    // console.log(str);
-                    console.log(group);
                     str = replaceAllRecursive(str,group.pattern, (...args) => group.run(flags, ...args));
                 }
                 else{
                     str = str.replaceAll(group.pattern, (...args) => group.run(flags, ...args));
                 }
             });
+        }
+        else{
+            if(macro.balanced){
+                str = replaceAllRecursive(str, macro.pattern, (...args) => macro.run(flags, ...args));
+            }
+            else
+                str = str.replaceAll(macro.pattern, (...args) => macro.run(flags, ...args));
         }
     });
 

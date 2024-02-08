@@ -40,8 +40,3 @@ function parseFile(str, flags={}){
 module.exports = {
     parseFile: parseFile,
 }
-
-// console.log(replaceAllRecursive("\\hello{sd{ad}}{fs}",'\\\\hello#{#!}!#{#!}!',(s, g1, g2) => {
-//     return g1 + g2;
-// }));
-console.log(parseFile("$2^3^5$"));
