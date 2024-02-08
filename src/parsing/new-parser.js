@@ -1,7 +1,5 @@
 const {basicRegexes, listRegexes} = require("./regexes.js");
-const {Stack, Queue, createPattern, findOffset} = require("../utils/index.js");
 const {encode} = require('html-entities');
-const XRegExp = require('xregexp');
 const {replaceAllRecursive} = require('../utils/myRegExp.js');
 
 const escapeCharacterRegex = /\\([\{\(\[\]\)\}]|[^\s\n](?=\s|\\|$))/gm;
@@ -30,7 +28,7 @@ function parseFile(str, flags={}){
             if(item.balanced)
                 str = replaceAllRecursive(str, item.pattern, (...args) => item.run(flags, ...args));
             else
-                str = str.replaceAll(item.pattern, (s, ...args) => item.run(flags, s, ...args));
+                str = str.replaceAll(item.pattern, (s, ...args) => {return item.run(flags, s, ...args)});
         }
     });
 
