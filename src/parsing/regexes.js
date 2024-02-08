@@ -2,23 +2,32 @@ const commands = require('./general/commands.js');
 const { makeTable } = require('./general/commands.js');
 const {mathParser} = require('./math/mathParser.js');
 
-const basicRegexes = [
+const preventMatchingRegexes = [
+    // blockcode
+    {
+        pattern: /```(\{.+?\}|)([^]*?)```/gm,
+        run: (s, g1, g2) => `<pre><code>${g2}</code></pre>`,
+    },
+    // code
+    {
+        pattern: /\`([^`]+?)\`/gm,
+        run: (s, g1) => `<code>${g1}</code>`,
+    },
     // math
     {
         pattern: /\$(.*?)\$/gm,
         giveFlags: true,
-        run: (flags,s,g1) => `<math>${mathParser(g1, flags)}</math>`
+        run: (flags,s,g1) => `<math>${mathParser(g1, flags)}</math>`,
     },
     // block math
     {
         pattern: /\/\[([^]*?)\]\//gm,
         run: (flags, s, g1) => `<br><math display="block">${mathParser(g1, flags)}</math><br>`,
     },
-    // blockcode
-    {
-        pattern: /```(\{.+?\}|)([^]*?)```/gm,
-        run: (s, g1, g2) => `<pre><code>${g2}</code></pre>`,
-    },
+]
+
+
+const basicRegexes = [
     //Table
     {
         balanced: true,
@@ -26,11 +35,6 @@ const basicRegexes = [
         run: (flags, s, g1, g2, ...args) => {
             return makeTable(flags, g1, g2);
         },
-    },
-    // code
-    {
-        pattern: /\`([^`]+?)\`/gm,
-        run: (s, g1) => `<code>${g1}</code>`,
     },
     // bold
     {
@@ -103,4 +107,5 @@ module.exports = {
     basicRegexes: basicRegexes,
     listRegexes: listRegexes,
     commandRegexes: commandRegexes,
+    preventMatchingRegexes: preventMatchingRegexes
 }
