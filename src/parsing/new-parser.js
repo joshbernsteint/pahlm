@@ -1,4 +1,4 @@
-const {basicRegexes, listRegexes} = require("./regexes.js");
+const {basicRegexes} = require("./regexes.js");
 const {encode} = require('html-entities');
 const {replaceAllRecursive} = require('../utils/myRegExp.js');
 

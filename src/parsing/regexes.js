@@ -59,53 +59,11 @@ const basicRegexes = [
     { pattern: /#\s(.*)/gm, run: (_,s,g1) => `<h1>${g1}</h1><hr>`},
 ];
 
-/**
- * Lists use the depth variable unless specified. 
- * Also sliceLength is actually the depth + sliceLength. Unless in the case of getInput = true, then the sliceLength depends on the input length.
- */
-const listRegexes = {
-    ul: {
-        pattern: /^(\s)*\*(\s+).+/g,
-        sliceLength: 2,
-        start: "<ul>",
-        end: "</ul>",
-        type: 'ul',
-    },
-    ulc: {
-        pattern: /^(\s)*(\*\[.+\])(\s+).+/g,
-        sliceLength: 1,
-        start: "<ul>",
-        end: "</ul>",
-        type: 'ul',
-        getInput: true,
-    },
-    ol: {
-        pattern: /^(\s)*&(\s+).+/g,
-        sliceLength: 2,
-        start: "<ol>",
-        end: "</ol>",
-        type: 'ol',
-    },
-    olc: {
-        pattern: /^(\s)*(&\[.+\])(\s+).+/g,
-        sliceLength: 1,
-        start: "<ol>",
-        end: "</ol>",
-        getInput: true,
-        type: "ol",
-    },
-};
 
-
-const commandRegexes = [
-    
-];
 
 
 
 module.exports = {
     basicRegexes: basicRegexes,
-    listRegexes: listRegexes,
-    commandRegexes: commandRegexes,
     preventMatchingRegexes: preventMatchingRegexes
 }
