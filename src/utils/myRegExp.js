@@ -1,5 +1,3 @@
-const XRegExp = require('xregexp');
-
 function matchRecursive(str, leftPattern, rightPattern, flags, startIndex=0){
     const left = new RegExp(leftPattern, flags);
     const right = new RegExp(rightPattern, flags);
