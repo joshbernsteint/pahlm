@@ -11,7 +11,7 @@ const basicRegexes = [
     },
     // block math
     {
-        pattern: /\/\[(.*?)\]\//gm,
+        pattern: /\/\[([^]*?)\]\//gm,
         run: (flags, s, g1) => `<br><math display="block">${mathParser(g1, flags)}</math><br>`,
     },
     // blockcode

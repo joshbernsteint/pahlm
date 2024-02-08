@@ -4,7 +4,7 @@ const {encode} = require('html-entities');
 const XRegExp = require('xregexp');
 const {replaceAllRecursive} = require('../utils/myRegExp.js');
 
-const escapeCharacterRegex = /\\[^\s\n](?=\s|\\|$)/gm;
+const escapeCharacterRegex = /\\([\{\(\[\]\)\}]|[^\s\n](?=\s|\\|$))/gm;
 
 function parseFile(str, flags={}){
 

@@ -38,7 +38,6 @@ function getBracketArgs(fun, args){
 
 function makeMatrix(flags, orientation, data){
     const matrixOrientation = parseOrientation(orientation, {validEdges: {begin: ["{", '(', '['], end: ["}",')', "]"]}});
-    console.log(matrixOrientation);
     return data;
 }
 

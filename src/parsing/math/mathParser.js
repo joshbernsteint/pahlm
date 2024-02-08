@@ -1,10 +1,11 @@
 const {Queue, createPattern, findOffset, replaceAt} = require("../../utils/index.js");
-// const {mathMacros, mathIdentifiers} = require("./math_regexes.js");
 const {replaceAllRecursive} = require('../../utils/myRegExp.js');
-
-
 const defaultCommands = require("./commands.js");
+const {decode} = require('html-entities');
 
+/**
+ * Contains math indentifier and operator regexes
+ */
 const mathIdentifiers = [
     /**     Operators           */
     { pattern: /\\le/gm, replace: "&le;", op: true, },
@@ -25,18 +26,18 @@ const mathIdentifiers = [
     /**     Arrow Regexes        */
     { pattern: /\\rarr/gm, replace: "&rarr;", op: true, },
     { pattern: /\\Rarr/gm, replace: "&DoubleRightArrow;", op: true, },
-    { pattern: /\\Longrarr/gm, replace: "&LongRightArrow;", op: true, },
-    { pattern: /\\LongRarr/gm, replace: "&DoubleLongRightArrow;", op: true, },
+    { pattern: /\\longrarr/gm, replace: "&LongRightArrow;", op: true, },
+    { pattern: /\\Longrarr/gm, replace: "&DoubleLongRightArrow;", op: true, },
 
     { pattern: /\\larr/gm, replace: "&larr;", op: true, },
     { pattern: /\\Larr/gm, replace: "&DoubleLeftArrow;", op: true, },
-    { pattern: /\\Longlarr/gm, replace: "LongLeftArrow;", op: true, },
-    { pattern: /\\LongLarr/gm, replace: "&DoubleLongLeftArrow;", op: true, },
+    { pattern: /\\longlarr/gm, replace: "LongLeftArrow;", op: true, },
+    { pattern: /\\Longlarr/gm, replace: "&DoubleLongLeftArrow;", op: true, },
 
     { pattern: /\\lrarr/gm, replace: "&LeftRightArrow;", op: true, },
-    { pattern: /\\LRarr/gm, replace: "&DoubleLeftRightArrow;", op: true, },
-    { pattern: /\\Longlrarr/gm, replace: "&LongLeftRightArrow;", op: true, },
-    { pattern: /\\LongLRarr/gm, replace: "&DoubleLongLeftRightArrow;", op: true, },
+    { pattern: /\\Lrarr/gm, replace: "&DoubleLeftRightArrow;", op: true, },
+    { pattern: /\\longlrarr/gm, replace: "&LongLeftRightArrow;", op: true, },
+    { pattern: /\\Longlrarr/gm, replace: "&DoubleLongLeftRightArrow;", op: true, },
 
 
     /**     Other */
@@ -132,40 +133,81 @@ const mathMacros = [
         ]
     },
     //Subscript
-    // {
-    //     pattern: "(#@|#!)_(#@|#!)",
-    //     customArgument: [undefined, /[^\s]+/,undefined,/[^\s]*[^\{]/],
-    //     name: "_",
-    //     customOffset: true,
-    //     variableOffset: true,
-    //     giveFlags: true,
-    //     run: (flags, s, ...args) => {
-    //         args = args.filter(el => el != undefined);
-    //         args.splice(-2);
-    //         args = args.slice(0,4);
-    //         let base;
-    //         let sub;
-    //         for (let i = 0; i < args.length; i++) {
-    //             const element = args[i];
-    //             if(element[0] === "{") continue;
-    //             else if(base) sub = element;
-    //             else base = element;
-    //         }
-    //         return `<msub>${mathParser(base, flags)}${mathParser(sub, flags)}</msub>`;
-    //     },
-    // },
-    // { pattern: "\\\\text#@", giveFlags: true, run: (flags, s, ...args) => defaultCommands.text(flags, args), name: "\\\\text" },
-    // { pattern: "\\\\sqrt#@", giveFlags: true, run: (flags, s, ...args) => defaultCommands.getBracketArgs(((g1) => `<msqrt>${mathParser(g1,flags)}</msqrt>`), args),  name: "\\\\sqrt"},
-    // { pattern: "\\\\root#@#@", giveFlags: true, run: (flags, s, ...args) => defaultCommands.getBracketArgs(((g1, g2) => `<mroot>${mathParser(g1,flags)}${mathParser(g2,flags)}</mroot>`), args),  name: "\\\\root"},
-    // { pattern: "\\\\frac#@#@", giveFlags: true, run: (flags, s, ...args) => defaultCommands.getBracketArgs(((g1, g2) => `<mfrac>${mathParser(g1,flags)}${mathParser(g2,flags)}</mfrac>`), args),  name: "\\\\frac"},
-    // { pattern: "\\\\binom#@#@", giveFlags: true, run: (flags, s, ...args) => defaultCommands.getBracketArgs(((g1, g2) => `<mo>&lpar;</mo><mfrac linethickness="0">${mathParser(g1,flags)}${mathParser(g2,flags)}</mfrac><mo>&rpar;</mo>`), args),  name: "\\\\frac"},
-    // { pattern: "\\\\int#@#@", giveFlags: true, run: (flags, s, ...args) => defaultCommands.getBracketArgs(((g1, g2) => `<msubsup><mo>&#x222B;</mo>${mathParser(g1,flags)}${mathParser(g2,flags)}</msubsup>`), args),  name: "\\\\int"},
+    {
+        grouped: [
+            //Both brackets
+            {
+                balanced: true,
+                pattern: [["{","}"], /\_/gm, ["{","}"]],
+                run: (flags, s, g1, g2) => {
+                    return `<msub>${mathParser(g1, flags)}${mathParser(g2, flags)}</msub>`
+                }
+            },
+            // //Left brackets only
+            {
+                balanced: true,
+                pattern: [["{","}"], /\_([^\n\^]*)/gm],
+                run: (flags, s, g1, g2) => {
+                    return `<msub>${mathParser(g1, flags)}${mathParser(g2, flags)}</msub>`
+                }
+            },
+            //Right brackets only
+            {
+                balanced: true,
+                pattern: [/([^\n\^]*)\_/gm, ["{","}"]],
+                run: (flags, s, g1, g2) => {
+                    return `<msub>${mathParser(g1, flags)}${mathParser(g2, flags)}</msub>`
+                }
+            },
+            //Version with no brackets
+            {
+                pattern: /([^\n\^]*)\_([^\n\^]*)/gm,
+                run: (flags, s, g1, g2) => {return `<msub>${mathParser(g1, flags)}${mathParser(g2, flags)}</msub>`}
+            },
+        ]
+    },
+    //Text
+    {
+        balanced: true,
+        pattern: [/\\text/gm, ["{","}"]],
+        run: (flags, s, g1) => defaultCommands.text(flags, g1)
+    },
+    //Square root
+    {
+        balanced: true,
+        pattern: [/\\sqrt/gm, ["{","}"]],
+        run: (flags, s, g1) => `<msqrt>${mathParser(g1,flags)}</msqrt>`
+    },
+    //Root
+    {
+        balanced: true,
+        pattern: [/\\root/gm, ["{","}"], ["{","}"]],
+        run: (flags, s, g1, g2) => `<mroot>${mathParser(g1,flags)}${mathParser(g2,flags)}</mroot>`
+    },
+    //Fraction
+    {
+        balanced: true,
+        pattern: [/\\frac/gm, ["{","}"], ["{","}"]],
+        run: (flags, s, g1, g2) => `<mfrac>${mathParser(g1,flags)}${mathParser(g2,flags)}</mfrac>`
+    },    
+    //Binomial
+    {
+        balanced: true,
+        pattern: [/\\binom/gm, ["{","}"], ["{","}"]],
+        run: (flags, s, g1, g2) => `<mo>&lpar;</mo><mfrac linethickness="0">${mathParser(g1,flags)}${mathParser(g2,flags)}</mfrac><mo>&rpar;</mo>`
+    },
+    //Integral
+    {
+        balanced: true,
+        pattern: [/\\int/gm, ["{","}"], ["{","}"]],
+        run: (flags, s, g1, g2) => `<msubsup><mo>&#x222B;</mo>${mathParser(g1,flags)}${mathParser(g2,flags)}</msubsup>`
+    },
     // CMatrix
     {
         balanced: true,
         pattern: [/\\cmatrix/gm, ["{","}"], ["{","}"]],
-        run: (flags, s, g1, g2, ...args) => {
-            return defaultCommands.makeMatrix(flags, g1, g2);
+        run: (flags, s, g1, g2) => {
+            return defaultCommands.makeMatrix(flags, decode(g1), g2);
         }
     }
 ];
@@ -191,6 +233,15 @@ function mathParser(str, flags){
             }
             else
                 str = str.replaceAll(macro.pattern, (...args) => macro.run(flags, ...args));
+        }
+    });
+
+    mathIdentifiers.forEach(identifier => {
+        if(identifier.op){
+            str = str.replaceAll(identifier.pattern, `<mo>${identifier.replace}</mo>`);
+        }
+        else{
+            str = str.replaceAll(identifier.pattern, `<mi>${identifier.replace}</mi>`);
         }
     });
 
