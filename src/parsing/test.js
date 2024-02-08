@@ -8,7 +8,7 @@ async function sleep(time){
 }
 
 async function main(){
-    const sourceFile = "D:/Coding/pahlm/src/parsing/test.plm";
+    const sourceFile = "src/parsing/test.plm";
     let curSize = fs.statSync(sourceFile).size;
 
     const buffer = fs.readFileSync(
@@ -17,7 +17,7 @@ async function main(){
     
     const output = parseFile(buffer);
     fs.writeFileSync(
-        "D:/Coding/pahlm/src/parsing/test-out.html"
+        "src/parsing/test-out.html"
         ,output)
 
 
@@ -33,7 +33,7 @@ async function main(){
             
             const output = parseFile(buffer);
             fs.writeFileSync(
-                "D:/Coding/pahlm/src/parsing/test-out.html"
+                "src/parsing/test-out.html"
                 ,output)
         }
     }

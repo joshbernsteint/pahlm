@@ -16,7 +16,6 @@ const preventMatchingRegexes = [
     // math
     {
         pattern: /\$(.*?)\$/gm,
-        giveFlags: true,
         run: (flags,s,g1) => `<math>${mathParser(g1, flags)}</math>`,
     },
     // block math

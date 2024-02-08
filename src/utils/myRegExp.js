@@ -37,12 +37,17 @@ function matchRecursive(str, leftPattern, rightPattern, flags, startIndex=0){
     return result;
 }
 
-function replaceAllRecursive(str, pattern, replaceWith){
+function replaceAllRecursive(str, pattern, replaceWith, wrapper){
     const numArgs = pattern.length;
     const matches = [];
     let curIndex = 0;
     let regexString = "";
     let stringLeft = str;
+    const resultData = {
+        start: -1,
+        end: -1,
+        pattern: undefined
+    };
 
     for (let i = 0; i < numArgs; i++) {
         let newMatch = undefined;
@@ -88,7 +93,15 @@ function replaceAllRecursive(str, pattern, replaceWith){
         matches.push(newMatch);
     }
     //Convert to regex and replace
-    return str.replaceAll(new RegExp(regexString, 'gm'), replaceWith);
+    resultData.start = matches[0].start;
+    resultData.end = matches[numArgs-1].end;
+    resultData.pattern = new RegExp(regexString, 'gm');
+
+    if(wrapper)
+        return str.replaceAll(resultData.pattern, (...args) => wrapper(resultData, ...args));
+    else
+        return str.replaceAll(resultData.pattern, replaceWith);
+
 }
 
 

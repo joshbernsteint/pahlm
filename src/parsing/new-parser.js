@@ -1,20 +1,28 @@
-const {basicRegexes} = require("./regexes.js");
+const {basicRegexes, preventMatchingRegexes} = require("./regexes.js");
 const {encode} = require('html-entities');
 const {replaceAllRecursive} = require('../utils/myRegExp.js');
+const { Queue } = require("../utils/index.js");
 
 const escapeCharacterRegex = /\\([\{\(\[\]\)\}]|[^\s\n](?=\s|\\|$))/gm;
 
 function parseFile(str, flags={}){
+    const queue = new Queue(str);
+    
+    preventMatchingRegexes.forEach(item => {
+        Array.from(str.matchAll(item.pattern)).forEach(mi => {
+            queue.addToQueue(mi[0],[mi.index, mi.index + mi[0].length], true);
+        });
+    });
+
 
     //Remove all comments
-    str = str.replaceAll(/<!--[^]*-->/gm, "");
+    str = str.replaceAll(/<!--[^]*?-->/gm, "");
 
     //Check for escape characters and replace them.
     str = str.replaceAll(escapeCharacterRegex, (s) => encode(s.charAt(1), {mode: "extensive"}));
 
-    //Check for lists
 
-    //Check for basic stuff
+    // Check for basic stuff
     basicRegexes.forEach(item => {
         if(item.grouped){
             item.grouped.forEach(smallItem => {

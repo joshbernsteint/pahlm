@@ -1,37 +1,69 @@
-
+const {replaceAllRecursive} = require("./myRegExp");
 class Queue{
     constructor(string){
         this.string = string;
         this.currentQueue = [];
+        this.stringDelta = 0;
         this.inaccessibleRanges = [];
     }
 
 
     IsRangeAccessible(startIndex, endIndex){
 
-        let validRange = true;
-        this.inaccessibleRanges.every(range => {
+        return this.inaccessibleRanges.every(range => {
+            const left = range[0] + this.stringDelta;
+            const right = range[1] + this.stringDelta;
             if(
-                (range[0] <= startIndex && startIndex <= range[1]) ||
-                (range[0] <= endIndex && endIndex <= range[1])
+                (left <= startIndex && startIndex <= right) ||
+                (left <= endIndex && endIndex <= right)
             ){
-                validRange = false;
                 return false;
             }
             return true;
         });
-        return validRange;
     }
 
-    addToQueue(objBody, range){
+    /**
+     * Replaces the queue string with the specified string or function IF it can.
+     * @param {RegExp} pattern 
+     * @param {Function | string} replaceWith 
+     */
+    replaceAll(pattern, replaceWith){
+        const replaceFunction = typeof replaceWith === "string" ? ((s) => replaceWith) : replaceWith;
+        this.string = this.string.replaceAll(pattern, (s, ...args) => {
+            const index = args.filter(el => typeof el === "number")[0];
+            if(this.IsRangeAccessible(index, index + s.length)){
+                console.log(s, args);
+                const ret = replaceFunction(s, ...args);
+                this.stringDelta += ret.length - s.length;
+                return ret;
+            }
+            else
+                return s;
+        });
+    }
+
+    replaceAllR(pattern, runFunction){
+        this.string = replaceAllRecursive(this.string, pattern, runFunction, (data, s, ...args) => {
+            if(!this.IsRangeAccessible(data.start, data.end)) return s;
+            else{
+                const ret = runFunction(s, ...args);
+                this.stringDelta += ret.length - s.length;
+                return ret;
+            }
+        });
+    }
+
+    addToQueue(body, range, preventRecursive=false){
         if(!this.IsRangeAccessible(...range)) return -1;
 
-        if(objBody.preventRecursive)
+        if(preventRecursive)
             this.inaccessibleRanges.push(range);
         
         this.currentQueue.push({
-            ...objBody,
-            range: range,
+            match: body,
+            start: range[0],
+            end: range[1]
         });
         return 0;
     }
@@ -47,7 +79,13 @@ class Queue{
     }
 
     applyQueue(fun){
-        const result = fun(this.string, this.currentQueue, this.currentQueue.length);
+        const result = fun(this.string, this.currentQueue.map(queueItem => {
+            return {
+                ...queueItem,
+                start: queueItem.start + this.stringDelta,
+                end: queueItem.end + this.stringDelta,
+            }
+        }), this.currentQueue.length);
         this.string = result;
         this.currentQueue = [];
         this.inaccessibleRanges = [];
