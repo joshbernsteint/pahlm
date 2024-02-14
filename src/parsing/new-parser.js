@@ -5,7 +5,7 @@ const { Queue } = require("../utils/index.js");
 
 const escapeCharacterRegex = /\\([\{\(\[\]\)\}]|[^\s\n](?=\s|\\|$))/gm;
 
-function parseFile(str, flags={}){
+function parseFile(str, flags={customCommands: []}){
     const queue = new Queue(str);
     
     preventMatchingRegexes.forEach(item => {

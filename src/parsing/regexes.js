@@ -1,5 +1,5 @@
 const commands = require('./general/commands.js');
-const { makeTable } = require('./general/commands.js');
+const defaultCommands = require('./general/commands.js');
 const {mathParser} = require('./math/mathParser.js');
 
 const preventMatchingRegexes = [
@@ -27,12 +27,16 @@ const preventMatchingRegexes = [
 
 
 const basicRegexes = [
+    //Custom command
+    {
+        pattern: [/\\newcommand/gm, ["[","]", ["{","}"]]],
+        run: (flags, s, g1, g2) => defaultCommands.newCommand(flags, g1, g2),
+    },
     //Table
     {
-        balanced: true,
         pattern: [/\\table/gm, ["{","}"],  ["{","}"]],
         run: (flags, s, g1, g2, ...args) => {
-            return makeTable(flags, g1, g2);
+            return defaultCommands.makeTable(flags, g1, g2);
         },
     },
     // bold
@@ -46,7 +50,7 @@ const basicRegexes = [
         run: (s,g1) => `<i>${g1}</i>`,
     },
     // br
-    { pattern: /(\\s\\s\\s+)$|^$/gm, run: () => "<br>",},
+    { pattern: /(\\s\\s\\s+)$|\\\\|^$/gm, run: () => "<br>",},
     // Dash
     { pattern: /---/gm, run: () => "&#8212;",},
     { pattern: /#######\s(.*)/gm, run: (_,s,g1) => `<h7>${g1}</h7>`},
@@ -56,6 +60,14 @@ const basicRegexes = [
     { pattern: /###\s(.*)/gm, run: (_,s,g1) => `<h3>${g1}</h3>`},
     { pattern: /##\s(.*)/gm, run: (_,s,g1) => `<h2>${g1}</h2><hr>`},
     { pattern: /#\s(.*)/gm, run: (_,s,g1) => `<h1>${g1}</h1><hr>`},
+    {
+        pattern: /(#{1,7})\s(.*)/gm,
+        run: (_, s, depth, title) => {
+            const length = depth.length;
+            const ret = `<h${length}>${title}</h${length}>`
+            return (length < 3) ? ret + "<hr>" : ret;
+        }
+    }
 ];
 
 

@@ -102,109 +102,72 @@ const mathMacros = [
     {
         grouped: [
             //Both brackets
-            {
-                balanced: true,
-                pattern: [["{","}"], /\^/gm, ["{","}"]],
-                run: (flags, s, g1, g2) => {
-                    return `<msup>${mathParser(g1, flags)}${mathParser(g2, flags)}</msup>`
-                }
-            },
+            [["{","}"], /\^/gm, ["{","}"]],
+
             // //Left brackets only
-            {
-                balanced: true,
-                pattern: [["{","}"], /\^([^\n\^]*)/gm],
-                run: (flags, s, g1, g2) => {
-                    return `<msup>${mathParser(g1, flags)}${mathParser(g2, flags)}</msup>`
-                }
-            },
+            [["{","}"], /\^([^\n\^]*)/gm],
+
             //Right brackets only
-            {
-                balanced: true,
-                pattern: [/([^\n\^]*)\^/gm, ["{","}"]],
-                run: (flags, s, g1, g2) => {
-                    return `<msup>${mathParser(g1, flags)}${mathParser(g2, flags)}</msup>`
-                }
-            },
+            [/([^\n\^]*)\^/gm, ["{","}"]],
+
             //Version with no brackets
-            {
-                pattern: /([^\n\^]*)\^([^\n\^]*)/gm,
-                run: (flags, s, g1, g2) => {return `<msup>${mathParser(g1, flags)}${mathParser(g2, flags)}</msup>`}
-            },
-        ]
+            /([^\n\^]*)\^([^\n\^]*)/gm,
+        ],
+        run: (flags, s, g1, g2) => {
+            return `<msup>${mathParser(g1, flags)}${mathParser(g2, flags)}</msup>`
+        }
     },
     //Subscript
     {
         grouped: [
             //Both brackets
-            {
-                balanced: true,
-                pattern: [["{","}"], /\_/gm, ["{","}"]],
-                run: (flags, s, g1, g2) => {
-                    return `<msub>${mathParser(g1, flags)}${mathParser(g2, flags)}</msub>`
-                }
-            },
+            [["{","}"], /\_/gm, ["{","}"]],
+
             // //Left brackets only
-            {
-                balanced: true,
-                pattern: [["{","}"], /\_([^\n\^]*)/gm],
-                run: (flags, s, g1, g2) => {
-                    return `<msub>${mathParser(g1, flags)}${mathParser(g2, flags)}</msub>`
-                }
-            },
+            [["{","}"], /\_([^\n\^]*)/gm],
+
             //Right brackets only
-            {
-                balanced: true,
-                pattern: [/([^\n\^]*)\_/gm, ["{","}"]],
-                run: (flags, s, g1, g2) => {
-                    return `<msub>${mathParser(g1, flags)}${mathParser(g2, flags)}</msub>`
-                }
-            },
+            [/([^\n\^]*)\_/gm, ["{","}"]],
+
             //Version with no brackets
-            {
-                pattern: /([^\n\^]*)\_([^\n\^]*)/gm,
-                run: (flags, s, g1, g2) => {return `<msub>${mathParser(g1, flags)}${mathParser(g2, flags)}</msub>`}
-            },
-        ]
+            [/([^\n\^]*)\_([^\n\^]*)/gm],
+        ],
+        run: (flags, s, g1, g2) => {
+            return `<msub>${mathParser(g1, flags)}${mathParser(g2, flags)}</msub>`
+        }
     },
     //Text
     {
-        balanced: true,
         pattern: [/\\text/gm, ["{","}"]],
         run: (flags, s, g1) => defaultCommands.text(flags, g1)
     },
     //Square root
     {
-        balanced: true,
         pattern: [/\\sqrt/gm, ["{","}"]],
         run: (flags, s, g1) => `<msqrt>${mathParser(g1,flags)}</msqrt>`
     },
     //Root
     {
-        balanced: true,
         pattern: [/\\root/gm, ["{","}"], ["{","}"]],
         run: (flags, s, g1, g2) => `<mroot>${mathParser(g1,flags)}${mathParser(g2,flags)}</mroot>`
     },
     //Fraction
     {
-        balanced: true,
         pattern: [/\\frac/gm, ["{","}"], ["{","}"]],
         run: (flags, s, g1, g2) => `<mfrac>${mathParser(g1,flags)}${mathParser(g2,flags)}</mfrac>`
     },    
     //Binomial
     {
-        balanced: true,
         pattern: [/\\binom/gm, ["{","}"], ["{","}"]],
         run: (flags, s, g1, g2) => `<mo>&lpar;</mo><mfrac linethickness="0">${mathParser(g1,flags)}${mathParser(g2,flags)}</mfrac><mo>&rpar;</mo>`
     },
     //Integral
     {
-        balanced: true,
         pattern: [/\\int/gm, ["{","}"], ["{","}"]],
         run: (flags, s, g1, g2) => `<msubsup><mo>&#x222B;</mo>${mathParser(g1,flags)}${mathParser(g2,flags)}</msubsup>`
     },
-    // CMatrix
+    // CMatrix (Custom matrix)
     {
-        balanced: true,
         pattern: [/\\cmatrix/gm, ["{","}"], ["{","}"]],
         run: (flags, s, g1, g2) => {
             return defaultCommands.makeMatrix(flags, decode(g1), g2);
@@ -213,37 +176,10 @@ const mathMacros = [
 ];
 
 function mathParser(str, flags){
-    if(!isNaN(Number(str))){
+    if(!isNaN(Number(str)))
         return `<mn>${str}</mn>`;
-    }
-    mathMacros.forEach(macro => {
-        if(macro.grouped){
-            macro.grouped.forEach(group => {
-                if(group.balanced){
-                    str = replaceAllRecursive(str,group.pattern, (...args) => group.run(flags, ...args));
-                }
-                else{
-                    str = str.replaceAll(group.pattern, (...args) => group.run(flags, ...args));
-                }
-            });
-        }
-        else{
-            if(macro.balanced){
-                str = replaceAllRecursive(str, macro.pattern, (...args) => macro.run(flags, ...args));
-            }
-            else
-                str = str.replaceAll(macro.pattern, (...args) => macro.run(flags, ...args));
-        }
-    });
+    
 
-    mathIdentifiers.forEach(identifier => {
-        if(identifier.op){
-            str = str.replaceAll(identifier.pattern, `<mo>${identifier.replace}</mo>`);
-        }
-        else{
-            str = str.replaceAll(identifier.pattern, `<mi>${identifier.replace}</mi>`);
-        }
-    });
 
     return `<mrow>${str}</mrow>`;
 }

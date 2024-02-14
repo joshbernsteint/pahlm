@@ -1,18 +1,19 @@
 const {replaceAllRecursive} = require("./myRegExp");
 class Queue{
+    /**
+     * @param {string} string 
+     */
     constructor(string){
         this.string = string;
         this.currentQueue = [];
-        this.stringDelta = 0;
-        this.inaccessibleRanges = [];
     }
 
 
     IsRangeAccessible(startIndex, endIndex){
-
-        return this.inaccessibleRanges.every(range => {
-            const left = range[0] + this.stringDelta;
-            const right = range[1] + this.stringDelta;
+        return this.currentQueue.every(el => {
+            const range = el.rangeData;
+            const left = range.start + range.delta;
+            const right = range.end + range.delta;
             if(
                 (left <= startIndex && startIndex <= right) ||
                 (left <= endIndex && endIndex <= right)
@@ -21,6 +22,13 @@ class Queue{
             }
             return true;
         });
+    }
+
+    _updateStringDeltas(position, amount){
+        for (let i = 0; i < this.currentQueue.length; i++) {
+            if(position <= this.currentQueue[i].rangeData.end)
+                this.currentQueue.rangeData.delta += amount;
+        }
     }
 
     /**
@@ -35,7 +43,7 @@ class Queue{
             if(this.IsRangeAccessible(index, index + s.length)){
                 console.log(s, args);
                 const ret = replaceFunction(s, ...args);
-                this.stringDelta += ret.length - s.length;
+                this._updateStringDeltas(index,ret.length - s.length);
                 return ret;
             }
             else
@@ -48,22 +56,21 @@ class Queue{
             if(!this.IsRangeAccessible(data.start, data.end)) return s;
             else{
                 const ret = runFunction(s, ...args);
-                this.stringDelta += ret.length - s.length;
+                this._updateStringDeltas(data.start, ret.length - s.length);
                 return ret;
             }
         });
     }
 
-    addToQueue(body, range, preventRecursive=false){
+    addToQueue(body, range){
         if(!this.IsRangeAccessible(...range)) return -1;
-
-        if(preventRecursive)
-            this.inaccessibleRanges.push(range);
-        
         this.currentQueue.push({
             match: body,
-            start: range[0],
-            end: range[1]
+            rangeData: {
+                start: range[0],
+                end: range[1],
+                delta: 0,
+            }
         });
         return 0;
     }
@@ -74,21 +81,13 @@ class Queue{
 
     clear(){
         this.currentQueue = [];
-        this.inaccessibleRanges = [];
         this.string = "";
     }
 
     applyQueue(fun){
-        const result = fun(this.string, this.currentQueue.map(queueItem => {
-            return {
-                ...queueItem,
-                start: queueItem.start + this.stringDelta,
-                end: queueItem.end + this.stringDelta,
-            }
-        }), this.currentQueue.length);
+        const result = fun(this.string, this.currentQueue, this.currentQueue.length);
         this.string = result;
-        this.currentQueue = [];
-        this.inaccessibleRanges = [];
+        this.currentQueue = []; 
         return result;
     }
 
