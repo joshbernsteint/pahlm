@@ -3,7 +3,7 @@ const { parseOrientation, replaceInSequence } = require("../../utils");
 
 function makeTable(flags, orientation, data){
     const tableData = parseOrientation(orientation, {validEdges: {begin: ["|"], end: ["|"]}});
-    console.log(tableData);
+    // console.log(tableData);
     //Ignore this
     const preRows = data.replaceAll("\n","").split(/(\&bsol\;)|(\s\s\s+)|(\\hline)/g,).filter(el => {
         if(!el || el.trim().length === 0 || el === '&bsol;')
@@ -11,7 +11,7 @@ function makeTable(flags, orientation, data){
         return true;
     }).map(el => el.trim()); 
 
-    console.log(preRows);
+    // console.log(preRows);
     const doneRows = [];
     let borderFlag = undefined;
     for (let i = 0; i < preRows.length; i++) {
@@ -26,7 +26,7 @@ function makeTable(flags, orientation, data){
         }
         else{
             const elements = curRow.split("&");
-            console.log(elements);
+            // console.log(elements);
             borderFlag = undefined;
         }
     }
@@ -36,6 +36,18 @@ function makeTable(flags, orientation, data){
     else
         return `<table>${doneRows.join('')}</table`;
 
+}
+
+/**
+ * @param {*} flags 
+ * @param {string} data 
+ * @param {number} numRepeats 
+ * @returns 
+ */
+function repeatData(flags, data, numRepeats){
+    numRepeats = Number(numRepeats);
+    if(isNaN(numRepeats)) return data;
+    return data.repeat(numRepeats);
 }
 
 function newCommand(flags, commandName, numArgs, initialString){

@@ -76,5 +76,5 @@ module.exports = {
     replaceInSequence,
     findOffset: findOffset,
     replaceAt: replaceAt,
-    parseOrientation
+    parseOrientation,
 }

@@ -14,7 +14,7 @@ function parseFile(str, flags={
     const queue = new Queue(str);
     preventMatchingRegexes.forEach(item => {
         Array.from(str.matchAll(item.pattern)).forEach(mi => {
-            queue.addToQueue(mi[0],[mi.index, mi.index + mi[0].length], true);
+            queue.addToQueue(mi[0], mi[1],[mi.index, mi.index + mi[0].length], (...args) => item.run(flags, ...args));
         });
     });
 
@@ -42,6 +42,8 @@ function parseFile(str, flags={
         queue.replaceAll(item.pattern, (...args) => item.run(flags, ...args));
     }
 
+    //Apply the queue
+    queue.applyQueue();
     return queue.string;
 }
 

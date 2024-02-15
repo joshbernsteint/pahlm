@@ -5,13 +5,13 @@ const {mathParser} = require('./math/mathParser.js');
 const preventMatchingRegexes = [
     // blockcode
     {
-        pattern: /```(\{.+?\}|)([^]*?)```/gm,
-        run: (s, g1, g2) => `<pre><code>${g2}</code></pre>`,
+        pattern: /```((\{.+?\}|)([^]*?))```/gm,
+        run: (flags, s, g1, g2) => `<pre><code>${g1}</code></pre>`,
     },
     // code
     {
         pattern: /\`([^`]+?)\`/gm,
-        run: (s, g1) => `<code>${g1}</code>`,
+        run: (flag, s, g1) => `<code>${g1}</code>`,
     },
     // math
     {

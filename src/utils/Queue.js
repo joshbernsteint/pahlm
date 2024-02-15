@@ -1,5 +1,5 @@
 const { findOffset } = require("./stringUtils.js");
-const {replaceAllRecursive} = require("./myRegExp");
+const {replaceAllRecursive, toRegexString} = require("./myRegExp");
 
 class Queue{
     /**
@@ -75,10 +75,12 @@ class Queue{
             this._rA(pattern, replaceWith);
     }
 
-    addToQueue(body, range){
+    addToQueue(match, content, range, runFunction){
         if(!this.IsRangeAccessible(...range)) return -1;
         this.currentQueue.push({
-            match: body,
+            match: new RegExp(toRegexString(match), 'gm'),
+            content: content,
+            run: runFunction,
             rangeData: {
                 start: range[0],
                 end: range[1],
@@ -98,10 +100,10 @@ class Queue{
     }
 
     applyQueue(fun){
-        const result = fun(this.string, this.currentQueue, this.currentQueue.length);
-        this.string = result;
-        this.currentQueue = []; 
-        return result;
+        for (const item of this.currentQueue) {
+            this.string = this.string.replaceAll(item.match, (s) => item.run(s,item.content));
+        }
+        this.currentQueue = [];
     }
 
     /**

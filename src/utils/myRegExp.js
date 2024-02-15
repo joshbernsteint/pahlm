@@ -88,7 +88,7 @@ function replaceAllRecursive(str, pattern, replaceWith, wrapper){
             regexString += newMatch.match.source;
         }
         else{
-            regexString +=  newMatch.delimiters[0]+"(" + newMatch.match.replaceAll(/(\+|-|\*|\/|=|>|<|>=|<=|&|\||%|!|\^|\(|\)|\]|\[|\\)/gm, (s) => "\\" + s) + ")" + newMatch.delimiters[1];
+            regexString +=  newMatch.delimiters[0]+"(" + toRegexString(newMatch.match) + ")" + newMatch.delimiters[1];
         }
         matches.push(newMatch);
     }
@@ -104,7 +104,12 @@ function replaceAllRecursive(str, pattern, replaceWith, wrapper){
 
 }
 
+function toRegexString(str){
+    return str.replaceAll(/(\+|-|\*|\/|=|>|<|>=|<=|&|\||%|!|\^|\(|\)|\]|\[|\\|\{|\}|\$)/gm, (s) => "\\" + s);
+}
+
 
 module.exports = {
     replaceAllRecursive,
+    toRegexString
 }
