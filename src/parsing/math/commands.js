@@ -15,27 +15,6 @@ function text(flags, args){
 
 
 
-
-function getBracketArgs(fun, args){
-    args.splice(-2);
-    const res = [];
-    // console.log(args);
-    let last = undefined;
-    for (let i = args.length-1; i >= 0; i--) {
-        const cur = args[i];
-        if(!last){
-            last = cur;
-        }
-        else if(cur.indexOf("{"+last+"}") === -1){
-            res.unshift(last);
-        }
-        last = cur;
-    }
-    res.unshift(last);
-    const t = fun(...res);
-    return t;
-}
-
 function makeMatrix(flags, orientation, data){
     const matrixOrientation = parseOrientation(orientation, {validEdges: {begin: ["{", '(', '['], end: ["}",')', "]"]}});
     return data;
@@ -43,6 +22,5 @@ function makeMatrix(flags, orientation, data){
 
 module.exports = {
     text,
-    getBracketArgs,
     makeMatrix
 }

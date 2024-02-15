@@ -5,42 +5,44 @@ const { Queue } = require("../utils/index.js");
 
 const escapeCharacterRegex = /\\([\{\(\[\]\)\}]|[^\s\n](?=\s|\\|$))/gm;
 
-function parseFile(str, flags={customCommands: []}){
+function parseFile(str, flags={
+    customCommands: {
+        parser: parseFile,
+        registered: [],
+    }
+}){
     const queue = new Queue(str);
-    
     preventMatchingRegexes.forEach(item => {
         Array.from(str.matchAll(item.pattern)).forEach(mi => {
             queue.addToQueue(mi[0],[mi.index, mi.index + mi[0].length], true);
         });
     });
 
-
     //Remove all comments
-    str = str.replaceAll(/<!--[^]*?-->/gm, "");
-
+    queue.replaceAll(/<!--[^]*?-->/gm, "");
+    
     //Check for escape characters and replace them.
-    str = str.replaceAll(escapeCharacterRegex, (s) => encode(s.charAt(1), {mode: "extensive"}));
-
-
+    queue.replaceAll(escapeCharacterRegex, (s) => encode(s.charAt(1), {mode: "extensive"}));
+    
+    
     // Check for basic stuff
-    basicRegexes.forEach(item => {
+    for (const item of basicRegexes) {
         if(item.grouped){
-            item.grouped.forEach(smallItem => {
-                if(item.balanced)
-                    str = replaceAllRecursive(str, smallItem.pattern, (...args) => smallItem.run(flags, ...args));
-                else
-                    str = str.replaceAll(smallItem.pattern, (s, ...args) => smallItem.run(flags, s, ...args));
-            });
+            for (const groupItem of item.grouped){
+                queue.replaceAll(groupItem, (...args) => item.run(flags, ...args));
+            }
         }
         else{
-            if(item.balanced)
-                str = replaceAllRecursive(str, item.pattern, (...args) => item.run(flags, ...args));
-            else
-                str = str.replaceAll(item.pattern, (s, ...args) => {return item.run(flags, s, ...args)});
+            queue.replaceAll(item.pattern, (...args) => item.run(flags, ...args));
         }
-    });
+    }
 
-    return str;
+    //Check for custom commands
+    for (const item of flags.customCommands.registered) {
+        queue.replaceAll(item.pattern, (...args) => item.run(flags, ...args));
+    }
+
+    return queue.string;
 }
 
 module.exports = {

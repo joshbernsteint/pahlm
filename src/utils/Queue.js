@@ -1,4 +1,6 @@
+const { findOffset } = require("./stringUtils.js");
 const {replaceAllRecursive} = require("./myRegExp");
+
 class Queue{
     /**
      * @param {string} string 
@@ -27,7 +29,7 @@ class Queue{
     _updateStringDeltas(position, amount){
         for (let i = 0; i < this.currentQueue.length; i++) {
             if(position <= this.currentQueue[i].rangeData.end)
-                this.currentQueue.rangeData.delta += amount;
+                this.currentQueue[i].rangeData.delta += amount;
         }
     }
 
@@ -36,12 +38,11 @@ class Queue{
      * @param {RegExp} pattern 
      * @param {Function | string} replaceWith 
      */
-    replaceAll(pattern, replaceWith){
+    _rA(pattern, replaceWith){
         const replaceFunction = typeof replaceWith === "string" ? ((s) => replaceWith) : replaceWith;
         this.string = this.string.replaceAll(pattern, (s, ...args) => {
-            const index = args.filter(el => typeof el === "number")[0];
+            const index = findOffset(args);
             if(this.IsRangeAccessible(index, index + s.length)){
-                console.log(s, args);
                 const ret = replaceFunction(s, ...args);
                 this._updateStringDeltas(index,ret.length - s.length);
                 return ret;
@@ -51,7 +52,7 @@ class Queue{
         });
     }
 
-    replaceAllR(pattern, runFunction){
+    _rAR(pattern, runFunction){
         this.string = replaceAllRecursive(this.string, pattern, runFunction, (data, s, ...args) => {
             if(!this.IsRangeAccessible(data.start, data.end)) return s;
             else{
@@ -60,6 +61,18 @@ class Queue{
                 return ret;
             }
         });
+    }
+
+    /**
+     * 
+     * @param {Array|RegExp} pattern 
+     * @param {string|Function} replaceWith 
+     */
+    replaceAll(pattern, replaceWith){
+        if(Array.isArray(pattern))
+            this._rAR(pattern, replaceWith);
+        else
+            this._rA(pattern, replaceWith);
     }
 
     addToQueue(body, range){

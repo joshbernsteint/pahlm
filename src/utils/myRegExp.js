@@ -1,10 +1,11 @@
 function matchRecursive(str, leftPattern, rightPattern, flags, startIndex=0){
-    const left = new RegExp(leftPattern, flags);
-    const right = new RegExp(rightPattern, flags);
+    const left = new RegExp(leftPattern.replace(/\{|\[|\]|\}/gm, (s) => "\\" + s), flags);
+    const right = new RegExp(rightPattern.replace(/\{|\[|\]|\}/gm, (s) => "\\" + s), flags);
     const result = {
         start: -1,
         end: -1,
-        match: ""
+        match: "",
+        delimiters: [left.source, right.source]
     };
     let currentDepth = 0;
     let leftSideIndex = str.substring(startIndex).search(left);
@@ -33,7 +34,6 @@ function matchRecursive(str, leftPattern, rightPattern, flags, startIndex=0){
     } while (currentDepth > 0 && rightSideIndex !== -1);
     result.end = jumpAmount;
     result.match = str.substring(result.start, result.end);
-
     return result;
 }
 
@@ -88,7 +88,7 @@ function replaceAllRecursive(str, pattern, replaceWith, wrapper){
             regexString += newMatch.match.source;
         }
         else{
-            regexString += "{(" + newMatch.match.replaceAll(/(\+|-|\*|\/|=|>|<|>=|<=|&|\||%|!|\^|\(|\)|\]|\[)/gm, (s) => "\\" + s) + ")}";
+            regexString +=  newMatch.delimiters[0]+"(" + newMatch.match.replaceAll(/(\+|-|\*|\/|=|>|<|>=|<=|&|\||%|!|\^|\(|\)|\]|\[|\\)/gm, (s) => "\\" + s) + ")" + newMatch.delimiters[1];
         }
         matches.push(newMatch);
     }

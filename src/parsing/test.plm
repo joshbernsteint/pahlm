@@ -1,5 +1,14 @@
-# hikhjhbggn
+## hikhjhbggn
+
+\newcommand{\whynot}[2]{Hello there #1, nevermind #2}
 
 $\int{x}{d}$
 
-\table{cc|c}{sad}
+\whynot{hsajhd}{Why would anyone do this}
+
+\table{cc|c}{
+    1 & 2 & 4 \\
+    5 & 8 & 2
+    \hline
+    9 & 1 & 2
+}

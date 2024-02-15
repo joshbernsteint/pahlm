@@ -16,12 +16,13 @@ async function main(){
         ).toString().replaceAll("\r","");
     
     const output = parseFile(buffer);
+    // console.log(output);
     fs.writeFileSync(
         "src/parsing/test-out.html"
         ,output)
 
 
-    while(true){
+    while(false){
         await sleep(1000);
         const newSize = fs.statSync(sourceFile).size;
         if(curSize !== newSize){
